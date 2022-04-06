@@ -9,4 +9,8 @@
 		<Company>MCB</Company>
 	</PropertyGroup>
 
+	<ItemGroup>
+	  <PackageReference Include="MCB.Core.Domain.Entities.Abstractions" Version="0.3.0-alpha" />
+	</ItemGroup>
+
 </Project>
