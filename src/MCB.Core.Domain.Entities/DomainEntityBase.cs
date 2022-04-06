@@ -15,7 +15,7 @@ namespace MCB.Core.Domain.Entities
         public DateTimeOffset RegistryVersion { get; private set; }
 
         // Constructors
-        protected internal DomainEntityBase()
+        protected DomainEntityBase()
         {
             AuditableInfo = new AuditableInfoValueObject();
         }
