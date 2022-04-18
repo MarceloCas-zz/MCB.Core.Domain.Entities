@@ -1,22 +1,26 @@
 ﻿using MCB.Core.Domain.Entities.Abstractions;
 using MCB.Core.Domain.Entities.Abstractions.ValueObjects;
-using System.Runtime.CompilerServices;
+using MCB.Core.Infra.CrossCutting.DesignPatterns.Validator.Abstractions.Enums;
 
-[assembly: InternalsVisibleTo("MCB.Core.Domain.Entities.Tests")]
 namespace MCB.Core.Domain.Entities
 {
     public abstract class DomainEntityBase
         : IDomainEntity
     {
+        // Fields
+        private ValidationInfoValueObject _validationInfoValueObject;
+
         // Properties
         public Guid Id { get; private set; }
         public Guid TenantId { get; private set; }
         public AuditableInfoValueObject AuditableInfo { get; private set; }
         public DateTimeOffset RegistryVersion { get; private set; }
+        public ValidationInfoValueObject ValidationInfo => (ValidationInfoValueObject)_validationInfoValueObject.Clone();
 
         // Constructors
         protected DomainEntityBase()
         {
+            _validationInfoValueObject = new ValidationInfoValueObject();
             AuditableInfo = new AuditableInfoValueObject();
         }
 
@@ -57,8 +61,25 @@ namespace MCB.Core.Domain.Entities
         }
         private DomainEntityBase GenerateNewRegistryVersion() => SetRegistryVersion(DateTimeOffset.UtcNow);
 
-        // Protected Internal Methods
-        protected internal DomainEntityBase RegisterNew(
+        // Protected Methods
+        protected void AddValidationMessage(ValidationMessageType validationMessageType, string code, string description)
+        {
+            _validationInfoValueObject.AddValidationMessage(validationMessageType, code, description);
+        }
+        protected void AddInformationValidationMessage(string code, string description)
+        {
+            AddValidationMessage(ValidationMessageType.Information, code, description);
+        }
+        protected void AddWarningValidationMessage(string code, string description)
+        {
+            AddValidationMessage(ValidationMessageType.Warning, code, description);
+        }
+        protected void AddErrorValidationMessage(string code, string description)
+        {
+            AddValidationMessage(ValidationMessageType.Error, code, description);
+        }
+
+        protected DomainEntityBase RegisterNew(
             Guid tenantId,
             string executionUser,
             string sourcePlatform
@@ -75,7 +96,7 @@ namespace MCB.Core.Domain.Entities
                 )
                 .GenerateNewRegistryVersion();
         }
-        protected internal DomainEntityBase SetExistingInfo(
+        protected DomainEntityBase SetExistingInfo(
             Guid id,
             Guid tenantId,
             string createdBy,
@@ -97,7 +118,7 @@ namespace MCB.Core.Domain.Entities
                 )
                 .SetRegistryVersion(registryVersion);
         }
-        protected internal DomainEntityBase RegisterModification(
+        protected DomainEntityBase RegisterModification(
             string executionUser,
             string sourcePlatform
         )
