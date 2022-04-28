@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using MCB.Core.Domain.Entities.Abstractions.ValueObjects;
 using MCB.Core.Infra.CrossCutting.DesignPatterns.Validator.Abstractions.Enums;
 using System;
 using System.Linq;
@@ -176,11 +177,79 @@ namespace MCB.Core.Domain.Entities.Tests
             customer.ValidationInfo.ValidationMessageCollection.ToList()[2].Code.Should().Be("ERROR_1");
             customer.ValidationInfo.ValidationMessageCollection.ToList()[2].Description.Should().Be("ERROR");
         }
+
+        [Fact]
+        public void DomainEntityBase_Should_DeepClone()
+        {
+            // Arrange
+            var customer = new Customer();
+            var tenantId = Guid.NewGuid();
+            var executionUser = "marcelo.castelo@outlook.com";
+            var sourcePlatform = "AppDemo";
+            var initialCreatedAt = customer.AuditableInfo.CreatedAt;
+            var initialRegistryVersion = customer.RegistryVersion;
+
+            customer.RegisterNewExposed(tenantId, executionUser, sourcePlatform);
+
+            customer.AddInformationValidationMessageExposed("INFO_1", "INFORMATION");
+            customer.AddWarningValidationMessageExposed("WARNING_1", "WARNING");
+            customer.AddErrorValidationMessageExposed("ERROR_1", "ERROR");
+            customer.ValidationInfo.AddErrorValidationMessage("ERROR_2", "ERROR");
+
+            // Act
+            var newCustomer = (Customer)customer.DeepCloneExposed();
+            customer.AddErrorValidationMessageExposed("ERROR_2", "ERROR");
+            customer.SetExistingInfoExposed(
+                id: Guid.NewGuid(),
+                tenantId: Guid.NewGuid(),
+                createdBy: Guid.NewGuid().ToString(),
+                createdAt: DateTimeOffset.UtcNow,
+                updatedBy: Guid.NewGuid().ToString(),
+                updatedAt: DateTimeOffset.UtcNow,
+                sourcePlatform: Guid.NewGuid().ToString(),
+                registryVersion: DateTimeOffset.UtcNow
+            );
+
+            // Assert
+            newCustomer.Id.Should().NotBe(default(Guid));
+            newCustomer.TenantId.Should().Be(tenantId);
+            newCustomer.AuditableInfo.CreatedBy.Should().Be(executionUser);
+            newCustomer.AuditableInfo.CreatedAt.Should().BeAfter(initialCreatedAt);
+            newCustomer.AuditableInfo.UpdatedBy.Should().BeNull();
+            newCustomer.AuditableInfo.UpdatedAt.Should().BeNull();
+            newCustomer.AuditableInfo.SourcePlatform.Should().Be(sourcePlatform);
+            newCustomer.RegistryVersion.Should().BeAfter(initialRegistryVersion);
+
+            newCustomer.ValidationInfo.Should().NotBeNull();
+            newCustomer.ValidationInfo.IsValid.Should().BeFalse();
+            newCustomer.ValidationInfo.HasValidationMessage.Should().BeTrue();
+            newCustomer.ValidationInfo.HasError.Should().BeTrue();
+            newCustomer.ValidationInfo.ValidationMessageCollection.Should().NotBeNull();
+            newCustomer.ValidationInfo.ValidationMessageCollection.Should().HaveCount(3);
+
+            newCustomer.ValidationInfo.ValidationMessageCollection.ToList()[0].ValidationMessageType.Should().Be(ValidationMessageType.Information);
+            newCustomer.ValidationInfo.ValidationMessageCollection.ToList()[0].Code.Should().Be("INFO_1");
+            newCustomer.ValidationInfo.ValidationMessageCollection.ToList()[0].Description.Should().Be("INFORMATION");
+
+            newCustomer.ValidationInfo.ValidationMessageCollection.ToList()[1].ValidationMessageType.Should().Be(ValidationMessageType.Warning);
+            newCustomer.ValidationInfo.ValidationMessageCollection.ToList()[1].Code.Should().Be("WARNING_1");
+            newCustomer.ValidationInfo.ValidationMessageCollection.ToList()[1].Description.Should().Be("WARNING");
+
+            newCustomer.ValidationInfo.ValidationMessageCollection.ToList()[2].ValidationMessageType.Should().Be(ValidationMessageType.Error);
+            newCustomer.ValidationInfo.ValidationMessageCollection.ToList()[2].Code.Should().Be("ERROR_1");
+            newCustomer.ValidationInfo.ValidationMessageCollection.ToList()[2].Description.Should().Be("ERROR");
+        }
     }
 
     public class Customer
         : DomainEntityBase
     {
+        // Protected Abstract Methods
+        protected override DomainEntityBase CreateInstanceForClone()
+        {
+            return new Customer();
+        }
+
         // Protected Methods
         public void AddValidationMessageExposed(ValidationMessageType validationMessageType, string code, string description)
             => AddValidationMessageExposed(validationMessageType, code, description);
@@ -199,7 +268,7 @@ namespace MCB.Core.Domain.Entities.Tests
             string executionUser,
             string sourcePlatform
         ) => RegisterNew(tenantId, executionUser, sourcePlatform);
-        
+
         public DomainEntityBase SetExistingInfoExposed(
             Guid id,
             Guid tenantId,
@@ -215,5 +284,8 @@ namespace MCB.Core.Domain.Entities.Tests
             string executionUser,
             string sourcePlatform
         ) => RegisterModification(executionUser, sourcePlatform);
+
+        public DomainEntityBase DeepCloneExposed()
+            => DeepClone();
     }
 }

@@ -8,7 +8,7 @@ namespace MCB.Core.Domain.Entities
         : IDomainEntity
     {
         // Fields
-        private ValidationInfoValueObject _validationInfoValueObject;
+        private ValidationInfoValueObject _validationInfoValueObject = new();
 
         // Properties
         public Guid Id { get; private set; }
@@ -20,7 +20,6 @@ namespace MCB.Core.Domain.Entities
         // Constructors
         protected DomainEntityBase()
         {
-            _validationInfoValueObject = new ValidationInfoValueObject();
             AuditableInfo = new AuditableInfoValueObject();
         }
 
@@ -60,6 +59,14 @@ namespace MCB.Core.Domain.Entities
             return this;
         }
         private DomainEntityBase GenerateNewRegistryVersion() => SetRegistryVersion(DateTimeOffset.UtcNow);
+        private DomainEntityBase SetValidationInfo(ValidationInfoValueObject validationInfoValueObject)
+        {
+            _validationInfoValueObject = validationInfoValueObject;
+            return this;
+        }
+
+        // Protected Abstract Methods
+        protected abstract DomainEntityBase CreateInstanceForClone();
 
         // Protected Methods
         protected void AddValidationMessage(ValidationMessageType validationMessageType, string code, string description)
@@ -101,7 +108,7 @@ namespace MCB.Core.Domain.Entities
             Guid tenantId,
             string createdBy,
             DateTimeOffset createdAt,
-            string updatedBy,
+            string? updatedBy,
             DateTimeOffset? updatedAt,
             string sourcePlatform,
             DateTimeOffset registryVersion
@@ -118,6 +125,7 @@ namespace MCB.Core.Domain.Entities
                 )
                 .SetRegistryVersion(registryVersion);
         }
+        
         protected DomainEntityBase RegisterModification(
             string executionUser,
             string sourcePlatform
@@ -131,6 +139,22 @@ namespace MCB.Core.Domain.Entities
                 sourcePlatform
             )
             .GenerateNewRegistryVersion();
+        }
+
+        protected DomainEntityBase DeepClone()
+        {
+            return CreateInstanceForClone()
+                .SetExistingInfo(
+                    Id,
+                    TenantId,
+                    AuditableInfo.CreatedBy,
+                    AuditableInfo.CreatedAt,
+                    AuditableInfo.UpdatedBy,
+                    AuditableInfo.UpdatedAt,
+                    AuditableInfo.SourcePlatform,
+                    RegistryVersion
+                )
+                .SetValidationInfo(ValidationInfo);
         }
     }
 }
