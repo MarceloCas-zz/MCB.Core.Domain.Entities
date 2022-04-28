@@ -245,7 +245,7 @@ namespace MCB.Core.Domain.Entities.Tests
         : DomainEntityBase
     {
         // Protected Abstract Methods
-        protected override DomainEntityBase CreateInstanceForClone()
+        protected override DomainEntityBase CreateInstanceForCloneInternal()
         {
             return new Customer();
         }
@@ -255,19 +255,19 @@ namespace MCB.Core.Domain.Entities.Tests
             => AddValidationMessageExposed(validationMessageType, code, description);
 
         public void AddInformationValidationMessageExposed(string code, string description)
-            => AddInformationValidationMessage(code, description);
+            => AddInformationValidationMessageInternal(code, description);
 
         public void AddWarningValidationMessageExposed(string code, string description)
-            => AddWarningValidationMessage(code, description);
+            => AddWarningValidationMessageInternal(code, description);
 
         public void AddErrorValidationMessageExposed(string code, string description)
-            => AddErrorValidationMessage(code, description);
+            => AddErrorValidationMessageInternal(code, description);
 
         public DomainEntityBase RegisterNewExposed(
             Guid tenantId,
             string executionUser,
             string sourcePlatform
-        ) => RegisterNew(tenantId, executionUser, sourcePlatform);
+        ) => RegisterNewInternal(tenantId, executionUser, sourcePlatform);
 
         public DomainEntityBase SetExistingInfoExposed(
             Guid id,
@@ -278,12 +278,12 @@ namespace MCB.Core.Domain.Entities.Tests
             DateTimeOffset? updatedAt,
             string sourcePlatform,
             DateTimeOffset registryVersion
-        ) => SetExistingInfo(id, tenantId, createdBy, createdAt, updatedBy, updatedAt, sourcePlatform, registryVersion);
+        ) => SetExistingInfoInternal(id, tenantId, createdBy, createdAt, updatedBy, updatedAt, sourcePlatform, registryVersion);
 
         public DomainEntityBase RegisterModificationExposed(
             string executionUser,
             string sourcePlatform
-        ) => RegisterModification(executionUser, sourcePlatform);
+        ) => RegisterModificationInternal(executionUser, sourcePlatform);
 
         public Customer DeepCloneInternalExposed()
             => DeepCloneInternal<Customer>();

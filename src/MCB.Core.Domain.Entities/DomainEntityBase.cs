@@ -66,27 +66,27 @@ namespace MCB.Core.Domain.Entities
         }
 
         // Protected Abstract Methods
-        protected abstract DomainEntityBase CreateInstanceForClone();
+        protected abstract DomainEntityBase CreateInstanceForCloneInternal();
 
         // Protected Methods
-        protected void AddValidationMessage(ValidationMessageType validationMessageType, string code, string description)
+        protected void AddValidationMessageInternal(ValidationMessageType validationMessageType, string code, string description)
         {
             _validationInfoValueObject.AddValidationMessage(validationMessageType, code, description);
         }
-        protected void AddInformationValidationMessage(string code, string description)
+        protected void AddInformationValidationMessageInternal(string code, string description)
         {
-            AddValidationMessage(ValidationMessageType.Information, code, description);
+            AddValidationMessageInternal(ValidationMessageType.Information, code, description);
         }
-        protected void AddWarningValidationMessage(string code, string description)
+        protected void AddWarningValidationMessageInternal(string code, string description)
         {
-            AddValidationMessage(ValidationMessageType.Warning, code, description);
+            AddValidationMessageInternal(ValidationMessageType.Warning, code, description);
         }
-        protected void AddErrorValidationMessage(string code, string description)
+        protected void AddErrorValidationMessageInternal(string code, string description)
         {
-            AddValidationMessage(ValidationMessageType.Error, code, description);
+            AddValidationMessageInternal(ValidationMessageType.Error, code, description);
         }
 
-        protected DomainEntityBase RegisterNew(
+        protected DomainEntityBase RegisterNewInternal(
             Guid tenantId,
             string executionUser,
             string sourcePlatform
@@ -103,7 +103,7 @@ namespace MCB.Core.Domain.Entities
                 )
                 .GenerateNewRegistryVersion();
         }
-        protected DomainEntityBase SetExistingInfo(
+        protected DomainEntityBase SetExistingInfoInternal(
             Guid id,
             Guid tenantId,
             string createdBy,
@@ -126,7 +126,7 @@ namespace MCB.Core.Domain.Entities
                 .SetRegistryVersion(registryVersion);
         }
         
-        protected DomainEntityBase RegisterModification(
+        protected DomainEntityBase RegisterModificationInternal(
             string executionUser,
             string sourcePlatform
         )
@@ -145,8 +145,8 @@ namespace MCB.Core.Domain.Entities
             where TDomainEntityBase : DomainEntityBase
         {
             return (TDomainEntityBase)
-                CreateInstanceForClone()
-                .SetExistingInfo(
+                CreateInstanceForCloneInternal()
+                .SetExistingInfoInternal(
                     Id,
                     TenantId,
                     AuditableInfo.CreatedBy,
