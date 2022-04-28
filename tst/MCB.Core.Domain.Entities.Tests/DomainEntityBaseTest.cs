@@ -197,7 +197,7 @@ namespace MCB.Core.Domain.Entities.Tests
             customer.ValidationInfo.AddErrorValidationMessage("ERROR_2", "ERROR");
 
             // Act
-            var newCustomer = (Customer)customer.DeepCloneInternalExposed();
+            var newCustomer = customer.DeepCloneInternalExposed();
             customer.AddErrorValidationMessageExposed("ERROR_2", "ERROR");
             customer.SetExistingInfoExposed(
                 id: Guid.NewGuid(),
@@ -255,19 +255,19 @@ namespace MCB.Core.Domain.Entities.Tests
             => AddValidationMessageExposed(validationMessageType, code, description);
 
         public void AddInformationValidationMessageExposed(string code, string description)
-            => AddInformationValidationMessageInternal(code, description);
+            => AddInformationValidationMessageInternal<Customer>(code, description);
 
         public void AddWarningValidationMessageExposed(string code, string description)
-            => AddWarningValidationMessageInternal(code, description);
+            => AddWarningValidationMessageInternal<Customer>(code, description);
 
         public void AddErrorValidationMessageExposed(string code, string description)
-            => AddErrorValidationMessageInternal(code, description);
+            => AddErrorValidationMessageInternal<Customer>(code, description);
 
         public DomainEntityBase RegisterNewExposed(
             Guid tenantId,
             string executionUser,
             string sourcePlatform
-        ) => RegisterNewInternal(tenantId, executionUser, sourcePlatform);
+        ) => RegisterNewInternal<Customer>(tenantId, executionUser, sourcePlatform);
 
         public DomainEntityBase SetExistingInfoExposed(
             Guid id,
@@ -278,14 +278,16 @@ namespace MCB.Core.Domain.Entities.Tests
             DateTimeOffset? updatedAt,
             string sourcePlatform,
             DateTimeOffset registryVersion
-        ) => SetExistingInfoInternal(id, tenantId, createdBy, createdAt, updatedBy, updatedAt, sourcePlatform, registryVersion);
+        ) => SetExistingInfoInternal<Customer>(id, tenantId, createdBy, createdAt, updatedBy, updatedAt, sourcePlatform, registryVersion);
 
         public DomainEntityBase RegisterModificationExposed(
             string executionUser,
             string sourcePlatform
-        ) => RegisterModificationInternal(executionUser, sourcePlatform);
+        ) => RegisterModificationInternal<Customer>(executionUser, sourcePlatform);
 
         public Customer DeepCloneInternalExposed()
             => DeepCloneInternal<Customer>();
+
+        
     }
 }
