@@ -141,9 +141,11 @@ namespace MCB.Core.Domain.Entities
             .GenerateNewRegistryVersion();
         }
 
-        protected DomainEntityBase DeepClone()
+        protected TDomainEntityBase DeepCloneInternal<TDomainEntityBase>()
+            where TDomainEntityBase : DomainEntityBase
         {
-            return CreateInstanceForClone()
+            return (TDomainEntityBase)
+                CreateInstanceForClone()
                 .SetExistingInfo(
                     Id,
                     TenantId,

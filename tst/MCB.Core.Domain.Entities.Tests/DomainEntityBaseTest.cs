@@ -179,7 +179,7 @@ namespace MCB.Core.Domain.Entities.Tests
         }
 
         [Fact]
-        public void DomainEntityBase_Should_DeepClone()
+        public void DomainEntityBase_Should_DeepCloneInternal()
         {
             // Arrange
             var customer = new Customer();
@@ -197,7 +197,7 @@ namespace MCB.Core.Domain.Entities.Tests
             customer.ValidationInfo.AddErrorValidationMessage("ERROR_2", "ERROR");
 
             // Act
-            var newCustomer = (Customer)customer.DeepCloneExposed();
+            var newCustomer = (Customer)customer.DeepCloneInternalExposed();
             customer.AddErrorValidationMessageExposed("ERROR_2", "ERROR");
             customer.SetExistingInfoExposed(
                 id: Guid.NewGuid(),
@@ -285,7 +285,7 @@ namespace MCB.Core.Domain.Entities.Tests
             string sourcePlatform
         ) => RegisterModification(executionUser, sourcePlatform);
 
-        public DomainEntityBase DeepCloneExposed()
-            => DeepClone();
+        public Customer DeepCloneInternalExposed()
+            => DeepCloneInternal<Customer>();
     }
 }
