@@ -1,5 +1,6 @@
 ﻿using MCB.Core.Domain.Entities.Abstractions;
 using MCB.Core.Domain.Entities.Abstractions.ValueObjects;
+using MCB.Core.Infra.CrossCutting.DateTime;
 using MCB.Core.Infra.CrossCutting.DesignPatterns.Validator.Abstractions.Enums;
 
 namespace MCB.Core.Domain.Entities
@@ -63,7 +64,7 @@ namespace MCB.Core.Domain.Entities
             return (TDomainEntityBase)this;
         }
         private TDomainEntityBase GenerateNewRegistryVersion<TDomainEntityBase>() where TDomainEntityBase : DomainEntityBase
-            => SetRegistryVersion<TDomainEntityBase>(DateTimeOffset.UtcNow);
+            => SetRegistryVersion<TDomainEntityBase>(DateTimeProvider.GetDate());
         private TDomainEntityBase SetValidationInfo<TDomainEntityBase>(ValidationInfoValueObject validationInfoValueObject)
              where TDomainEntityBase : DomainEntityBase
         {
@@ -107,7 +108,7 @@ namespace MCB.Core.Domain.Entities
                 .SetTenant<TDomainEntityBase>(tenantId)
                 .SetAuditableInfo<TDomainEntityBase>(
                     createdBy: executionUser,
-                    createdAt: DateTimeOffset.UtcNow,
+                    createdAt: DateTimeProvider.GetDate(),
                     updatedBy: null,
                     updatedAt: null,
                     sourcePlatform
@@ -146,7 +147,7 @@ namespace MCB.Core.Domain.Entities
                 createdBy: AuditableInfo.CreatedBy,
                 createdAt: AuditableInfo.CreatedAt,
                 updatedBy: executionUser,
-                updatedAt: DateTimeOffset.UtcNow,
+                updatedAt: DateTimeProvider.GetDate(),
                 sourcePlatform
             )
             .GenerateNewRegistryVersion<TDomainEntityBase>();

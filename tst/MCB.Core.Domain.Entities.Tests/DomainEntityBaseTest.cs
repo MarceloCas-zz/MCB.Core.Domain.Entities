@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using MCB.Core.Domain.Entities.Abstractions.ValueObjects;
+using MCB.Core.Infra.CrossCutting.DateTime;
 using MCB.Core.Infra.CrossCutting.DesignPatterns.Validator.Abstractions.Enums;
 using System;
 using System.Linq;
@@ -48,11 +49,11 @@ namespace MCB.Core.Domain.Entities.Tests
             var id = Guid.NewGuid();
             var tenantId = Guid.NewGuid();
             var createdBy = "marcelo.castelo@outlook.com";
-            var createdAt = DateTimeOffset.UtcNow;
+            var createdAt = DateTimeProvider.GetDate();
             var updatedBy = "marcelo.castelo@github.com";
-            var updatedAt = DateTimeOffset.UtcNow;
+            var updatedAt = DateTimeProvider.GetDate();
             var sourcePlatform = "AppDemo";
-            var registryVersion = DateTimeOffset.UtcNow;
+            var registryVersion = DateTimeProvider.GetDate();
 
             // Act
             customer.SetExistingInfoExposed(id, tenantId, createdBy, createdAt, updatedBy, updatedAt, sourcePlatform, registryVersion);
@@ -203,11 +204,11 @@ namespace MCB.Core.Domain.Entities.Tests
                 id: Guid.NewGuid(),
                 tenantId: Guid.NewGuid(),
                 createdBy: Guid.NewGuid().ToString(),
-                createdAt: DateTimeOffset.UtcNow,
+                createdAt: DateTimeProvider.GetDate(),
                 updatedBy: Guid.NewGuid().ToString(),
-                updatedAt: DateTimeOffset.UtcNow,
+                updatedAt: DateTimeProvider.GetDate(),
                 sourcePlatform: Guid.NewGuid().ToString(),
-                registryVersion: DateTimeOffset.UtcNow
+                registryVersion: DateTimeProvider.GetDate()
             );
 
             // Assert
@@ -287,7 +288,5 @@ namespace MCB.Core.Domain.Entities.Tests
 
         public Customer DeepCloneInternalExposed()
             => DeepCloneInternal<Customer>();
-
-        
     }
 }
