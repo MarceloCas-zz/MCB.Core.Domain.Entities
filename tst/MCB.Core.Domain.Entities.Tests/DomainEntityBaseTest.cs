@@ -29,9 +29,9 @@ namespace MCB.Core.Domain.Entities.Tests
             customer.TenantId.Should().Be(tenantId);
             customer.AuditableInfo.CreatedBy.Should().Be(executionUser);
             customer.AuditableInfo.CreatedAt.Should().BeAfter(initialCreatedAt);
-            customer.AuditableInfo.UpdatedBy.Should().BeNull();
-            customer.AuditableInfo.UpdatedAt.Should().BeNull();
-            customer.AuditableInfo.SourcePlatform.Should().Be(sourcePlatform);
+            customer.AuditableInfo.LastUpdatedBy.Should().BeNull();
+            customer.AuditableInfo.LastUpdatedAt.Should().BeNull();
+            customer.AuditableInfo.LastSourcePlatform.Should().Be(sourcePlatform);
             customer.RegistryVersion.Should().BeAfter(initialRegistryVersion);
             customer.ValidationInfo.Should().NotBeNull();
             customer.ValidationInfo.IsValid.Should().BeTrue();
@@ -63,9 +63,9 @@ namespace MCB.Core.Domain.Entities.Tests
             customer.TenantId.Should().Be(tenantId);
             customer.AuditableInfo.CreatedBy.Should().Be(createdBy);
             customer.AuditableInfo.CreatedAt.Should().Be(createdAt);
-            customer.AuditableInfo.UpdatedBy.Should().Be(updatedBy);
-            customer.AuditableInfo.UpdatedAt.Should().Be(updatedAt);
-            customer.AuditableInfo.SourcePlatform.Should().Be(sourcePlatform);
+            customer.AuditableInfo.LastUpdatedBy.Should().Be(updatedBy);
+            customer.AuditableInfo.LastUpdatedAt.Should().Be(updatedAt);
+            customer.AuditableInfo.LastSourcePlatform.Should().Be(sourcePlatform);
             customer.RegistryVersion.Should().Be(registryVersion);
             customer.ValidationInfo.Should().NotBeNull();
             customer.ValidationInfo.IsValid.Should().BeTrue();
@@ -88,7 +88,7 @@ namespace MCB.Core.Domain.Entities.Tests
             var initialId = customer.Id;
             var initialCreatedBy = customer.AuditableInfo.CreatedBy;
             var initialCreatedAt = customer.AuditableInfo.CreatedAt;
-            var initialUpdatedAt = customer.AuditableInfo.UpdatedAt;
+            var initialUpdatedAt = customer.AuditableInfo.LastUpdatedAt;
             var initialRegistryVersion = customer.RegistryVersion;
 
             var modificationExecutionUser = "marcelo.castelo@github.com";
@@ -102,9 +102,9 @@ namespace MCB.Core.Domain.Entities.Tests
             customer.TenantId.Should().Be(tenantId);
             customer.AuditableInfo.CreatedBy.Should().Be(initialCreatedBy);
             customer.AuditableInfo.CreatedAt.Should().Be(initialCreatedAt);
-            customer.AuditableInfo.UpdatedBy.Should().Be(modificationExecutionUser);
-            customer.AuditableInfo.UpdatedAt.Should().BeAfter(initialUpdatedAt ?? default);
-            customer.AuditableInfo.SourcePlatform.Should().Be(modificationSourcePlatform);
+            customer.AuditableInfo.LastUpdatedBy.Should().Be(modificationExecutionUser);
+            customer.AuditableInfo.LastUpdatedAt.Should().BeAfter(initialUpdatedAt ?? default);
+            customer.AuditableInfo.LastSourcePlatform.Should().Be(modificationSourcePlatform);
             customer.RegistryVersion.Should().BeAfter(initialRegistryVersion);
             customer.ValidationInfo.Should().NotBeNull();
             customer.ValidationInfo.IsValid.Should().BeTrue();
@@ -216,9 +216,9 @@ namespace MCB.Core.Domain.Entities.Tests
             newCustomer.TenantId.Should().Be(tenantId);
             newCustomer.AuditableInfo.CreatedBy.Should().Be(executionUser);
             newCustomer.AuditableInfo.CreatedAt.Should().BeAfter(initialCreatedAt);
-            newCustomer.AuditableInfo.UpdatedBy.Should().BeNull();
-            newCustomer.AuditableInfo.UpdatedAt.Should().BeNull();
-            newCustomer.AuditableInfo.SourcePlatform.Should().Be(sourcePlatform);
+            newCustomer.AuditableInfo.LastUpdatedBy.Should().BeNull();
+            newCustomer.AuditableInfo.LastUpdatedAt.Should().BeNull();
+            newCustomer.AuditableInfo.LastSourcePlatform.Should().Be(sourcePlatform);
             newCustomer.RegistryVersion.Should().BeAfter(initialRegistryVersion);
 
             newCustomer.ValidationInfo.Should().NotBeNull();

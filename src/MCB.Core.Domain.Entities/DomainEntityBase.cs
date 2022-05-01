@@ -163,9 +163,9 @@ namespace MCB.Core.Domain.Entities
                     TenantId,
                     AuditableInfo.CreatedBy,
                     AuditableInfo.CreatedAt,
-                    AuditableInfo.UpdatedBy,
-                    AuditableInfo.UpdatedAt,
-                    AuditableInfo.SourcePlatform,
+                    AuditableInfo.LastUpdatedBy,
+                    AuditableInfo.LastUpdatedAt,
+                    AuditableInfo.LastSourcePlatform,
                     RegistryVersion
                 )
                 .SetValidationInfo<TDomainEntityBase>(ValidationInfo);
