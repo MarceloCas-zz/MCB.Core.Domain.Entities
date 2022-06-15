@@ -16,7 +16,7 @@ namespace MCB.Core.Domain.Entities
         public Guid TenantId { get; private set; }
         public AuditableInfoValueObject AuditableInfo { get; private set; }
         public DateTimeOffset RegistryVersion { get; private set; }
-        public ValidationInfoValueObject ValidationInfo => (ValidationInfoValueObject)_validationInfoValueObject.Clone();
+        public ValidationInfoValueObject ValidationInfo => _validationInfoValueObject.Clone();
 
         // Constructors
         protected DomainEntityBase()
