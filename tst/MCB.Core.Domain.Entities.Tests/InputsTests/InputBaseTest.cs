@@ -2,7 +2,6 @@
 using MCB.Core.Domain.Entities.Inputs;
 using System;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace MCB.Core.Domain.Entities.Tests.InputsTests
 {
