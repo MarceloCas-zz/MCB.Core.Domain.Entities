@@ -1,7 +1,9 @@
 ﻿using FluentAssertions;
 using MCB.Core.Infra.CrossCutting.DateTime;
 using MCB.Core.Infra.CrossCutting.DesignPatterns.Validator.Abstractions.Enums;
+using MCB.Core.Infra.CrossCutting.DesignPatterns.Validator.Abstractions.Models;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
@@ -239,52 +241,123 @@ public class DomainEntityBaseTest
         newCustomer.ValidationInfo.ValidationMessageCollection.ToList()[2].Code.Should().Be("ERROR_1");
         newCustomer.ValidationInfo.ValidationMessageCollection.ToList()[2].Description.Should().Be("ERROR");
     }
-}
 
-public class Customer
-    : DomainEntityBase
-{
-    // Protected Abstract Methods
-    protected override DomainEntityBase CreateInstanceForCloneInternal()
+    [Fact]
+    public void DomainEntityBase_Should_Validate()
     {
-        return new Customer();
+        // Arrange
+        var customer = new Customer();
+
+        // Act
+        var isValid = customer.Validate();
+
+        // Assert
+        customer.ValidationInfo.Should().NotBeNull();
+        customer.ValidationInfo.HasValidationMessage.Should().BeTrue();
+        customer.ValidationInfo.HasError.Should().BeTrue();
+        isValid.Should().BeFalse();
+        customer.ValidationInfo.IsValid.Should().Be(isValid);
+        customer.ValidationInfo.ValidationMessageCollection.Should().NotBeNull();
+        customer.ValidationInfo.ValidationMessageCollection.Should().HaveCount(3);
+
+        var validationMessageCollection = customer.ValidationInfo.ValidationMessageCollection.ToList();
+
+        validationMessageCollection[0].ValidationMessageType.Should().Be(ValidationMessageType.Error);
+        validationMessageCollection[0].Code.Should().Be(Customer.ERROR_CODE);
+        validationMessageCollection[0].Description.Should().Be(Customer.ERROR_DESCRIPTION);
+
+        validationMessageCollection[1].ValidationMessageType.Should().Be(ValidationMessageType.Warning);
+        validationMessageCollection[1].Code.Should().Be(Customer.WARNING_CODE);
+        validationMessageCollection[1].Description.Should().Be(Customer.WARNING_DESCRIPTION);
+
+        validationMessageCollection[2].ValidationMessageType.Should().Be(ValidationMessageType.Information);
+        validationMessageCollection[2].Code.Should().Be(Customer.INFO_CODE);
+        validationMessageCollection[2].Description.Should().Be(Customer.INFO_DESCRIPTION);
     }
 
-    // Protected Methods
-    public void AddValidationMessageExposed(ValidationMessageType validationMessageType, string code, string description)
-        => AddValidationMessageExposed(validationMessageType, code, description);
+    #region Models
+    public class Customer
+        : DomainEntityBase
+    {
+        // Constants
+        public static readonly string ERROR_CODE = "code_1";
+        public static readonly string ERROR_DESCRIPTION = "description_1";
 
-    public void AddInformationValidationMessageExposed(string code, string description)
-        => AddInformationValidationMessageInternal<Customer>(code, description);
+        public static readonly string WARNING_CODE = "code_2";
+        public static readonly string WARNING_DESCRIPTION = "description_2";
 
-    public void AddWarningValidationMessageExposed(string code, string description)
-        => AddWarningValidationMessageInternal<Customer>(code, description);
+        public static readonly string INFO_CODE = "code_3";
+        public static readonly string INFO_DESCRIPTION = "description_3";
 
-    public void AddErrorValidationMessageExposed(string code, string description)
-        => AddErrorValidationMessageInternal<Customer>(code, description);
+        // Protected Abstract Methods
+        protected override DomainEntityBase CreateInstanceForCloneInternal()
+        {
+            return new Customer();
+        }
 
-    public DomainEntityBase RegisterNewExposed(
-        Guid tenantId,
-        string executionUser,
-        string sourcePlatform
-    ) => RegisterNewInternal<Customer>(tenantId, executionUser, sourcePlatform);
+        // Protected Methods
+        public void AddValidationMessageExposed(ValidationMessageType validationMessageType, string code, string description)
+            => AddValidationMessageExposed(validationMessageType, code, description);
 
-    public DomainEntityBase SetExistingInfoExposed(
-        Guid id,
-        Guid tenantId,
-        string createdBy,
-        DateTimeOffset createdAt,
-        string updatedBy,
-        DateTimeOffset? updatedAt,
-        string sourcePlatform,
-        DateTimeOffset registryVersion
-    ) => SetExistingInfoInternal<Customer>(id, tenantId, createdBy, createdAt, updatedBy, updatedAt, sourcePlatform, registryVersion);
+        public void AddInformationValidationMessageExposed(string code, string description)
+            => AddInformationValidationMessageInternal<Customer>(code, description);
 
-    public DomainEntityBase RegisterModificationExposed(
-        string executionUser,
-        string sourcePlatform
-    ) => RegisterModificationInternal<Customer>(executionUser, sourcePlatform);
+        public void AddWarningValidationMessageExposed(string code, string description)
+            => AddWarningValidationMessageInternal<Customer>(code, description);
 
-    public Customer DeepCloneInternalExposed()
-        => DeepCloneInternal<Customer>();
+        public void AddErrorValidationMessageExposed(string code, string description)
+            => AddErrorValidationMessageInternal<Customer>(code, description);
+
+        public bool Validate()
+        {
+            return Validate<Customer>(() =>
+                new ValidationResult(
+                    new List<ValidationMessage> {
+                            new ValidationMessage(
+                                validationMessageType: ValidationMessageType.Error,
+                                code: ERROR_CODE,
+                                description: ERROR_DESCRIPTION
+                            ),
+                            new ValidationMessage(
+                                validationMessageType: ValidationMessageType.Warning,
+                                code: WARNING_CODE,
+                                description: WARNING_DESCRIPTION
+                            ),
+                            new ValidationMessage(
+                                validationMessageType: ValidationMessageType.Information,
+                                code: INFO_CODE,
+                                description: INFO_DESCRIPTION
+                            )
+                    }
+                )
+            );
+        }
+
+        public DomainEntityBase RegisterNewExposed(
+            Guid tenantId,
+            string executionUser,
+            string sourcePlatform
+        ) => RegisterNewInternal<Customer>(tenantId, executionUser, sourcePlatform);
+
+        public DomainEntityBase SetExistingInfoExposed(
+            Guid id,
+            Guid tenantId,
+            string createdBy,
+            DateTimeOffset createdAt,
+            string updatedBy,
+            DateTimeOffset? updatedAt,
+            string sourcePlatform,
+            DateTimeOffset registryVersion
+        ) => SetExistingInfoInternal<Customer>(id, tenantId, createdBy, createdAt, updatedBy, updatedAt, sourcePlatform, registryVersion);
+
+        public DomainEntityBase RegisterModificationExposed(
+            string executionUser,
+            string sourcePlatform
+        ) => RegisterModificationInternal<Customer>(executionUser, sourcePlatform);
+
+        public Customer DeepCloneInternalExposed()
+            => DeepCloneInternal<Customer>();
+    } 
+    #endregion
 }
+

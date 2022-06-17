@@ -2,6 +2,7 @@
 using MCB.Core.Domain.Entities.Abstractions.ValueObjects;
 using MCB.Core.Infra.CrossCutting.DateTime;
 using MCB.Core.Infra.CrossCutting.DesignPatterns.Validator.Abstractions.Enums;
+using MCB.Core.Infra.CrossCutting.DesignPatterns.Validator.Abstractions.Models;
 
 namespace MCB.Core.Domain.Entities;
 
@@ -96,6 +97,19 @@ public abstract class DomainEntityBase
         where TDomainEntityBase : DomainEntityBase
     {
         return AddValidationMessageInternal<TDomainEntityBase>(ValidationMessageType.Error, code, description);
+    }
+
+    protected virtual bool Validate<TDomainEntityBase>(Func<ValidationResult> handle)
+            where TDomainEntityBase : DomainEntityBase
+    {
+        foreach (var validationMessage in handle().ValidationMessageCollection)
+            AddValidationMessageInternal<TDomainEntityBase>(
+                validationMessage.ValidationMessageType,
+                validationMessage.Code,
+                validationMessage.Description
+            );
+
+        return ValidationInfo.IsValid;
     }
 
     protected TDomainEntityBase RegisterNewInternal<TDomainEntityBase>(
