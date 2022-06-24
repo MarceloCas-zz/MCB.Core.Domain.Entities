@@ -1,5 +1,7 @@
 ﻿using MCB.Core.Domain.Entities.Abstractions;
+using MCB.Core.Domain.Entities.Abstractions.Specifications.Interfaces;
 using MCB.Core.Domain.Entities.Abstractions.ValueObjects;
+using MCB.Core.Domain.Entities.Specifications;
 using MCB.Core.Infra.CrossCutting.DateTime;
 using MCB.Core.Infra.CrossCutting.DesignPatterns.Validator.Abstractions.Enums;
 using MCB.Core.Infra.CrossCutting.DesignPatterns.Validator.Abstractions.Models;
@@ -10,6 +12,7 @@ public abstract class DomainEntityBase
     : IDomainEntity
 {
     // Fields
+    private readonly IDomainEntitySpecifications _domainEntitySpecifications;
     private ValidationInfoValueObject _validationInfoValueObject = new();
 
     // Properties
@@ -23,6 +26,7 @@ public abstract class DomainEntityBase
     protected DomainEntityBase()
     {
         AuditableInfo = new AuditableInfoValueObject();
+        _domainEntitySpecifications = CreateDomainEntitySpecificationsInstance();
     }
 
     // Private Methods
@@ -32,21 +36,19 @@ public abstract class DomainEntityBase
         Id = id;
         return (TDomainEntityBase)this;
     }
-    private TDomainEntityBase GenerateNewId<TDomainEntityBase>() where TDomainEntityBase : DomainEntityBase
-        => SetId<TDomainEntityBase>(Guid.NewGuid());
+    private TDomainEntityBase GenerateNewId<TDomainEntityBase>() 
+        where TDomainEntityBase : DomainEntityBase
+    {
+        return SetId<TDomainEntityBase>(Guid.NewGuid());
+    }
     private TDomainEntityBase SetTenant<TDomainEntityBase>(Guid tenantId)
         where TDomainEntityBase : DomainEntityBase
     {
         TenantId = tenantId;
         return (TDomainEntityBase)this;
     }
-    private TDomainEntityBase SetAuditableInfo<TDomainEntityBase>(
-        string createdBy,
-        DateTimeOffset createdAt,
-        string? updatedBy,
-        DateTimeOffset? updatedAt,
-        string sourcePlatform
-    ) where TDomainEntityBase : DomainEntityBase
+    private TDomainEntityBase SetAuditableInfo<TDomainEntityBase>(string createdBy, DateTimeOffset createdAt, string? updatedBy, DateTimeOffset? updatedAt, string sourcePlatform) 
+        where TDomainEntityBase : DomainEntityBase
     {
         AuditableInfo = new AuditableInfoValueObject(
             createdBy,
@@ -64,8 +66,11 @@ public abstract class DomainEntityBase
         RegistryVersion = registryVersion;
         return (TDomainEntityBase)this;
     }
-    private TDomainEntityBase GenerateNewRegistryVersion<TDomainEntityBase>() where TDomainEntityBase : DomainEntityBase
-        => SetRegistryVersion<TDomainEntityBase>(DateTimeProvider.GetDate());
+    private TDomainEntityBase GenerateNewRegistryVersion<TDomainEntityBase>() 
+        where TDomainEntityBase : DomainEntityBase
+    {
+        return SetRegistryVersion<TDomainEntityBase>(DateTimeProvider.GetDate());
+    }
     private TDomainEntityBase SetValidationInfo<TDomainEntityBase>(ValidationInfoValueObject validationInfoValueObject)
          where TDomainEntityBase : DomainEntityBase
     {
@@ -77,6 +82,11 @@ public abstract class DomainEntityBase
     protected abstract DomainEntityBase CreateInstanceForCloneInternal();
 
     // Protected Methods
+    protected virtual IDomainEntitySpecifications CreateDomainEntitySpecificationsInstance()
+    {
+        return new DomainEntitySpecifications();
+    }
+
     protected TDomainEntityBase AddValidationMessageInternal<TDomainEntityBase>(ValidationMessageType validationMessageType, string code, string description)
         where TDomainEntityBase : DomainEntityBase
     {
@@ -100,7 +110,7 @@ public abstract class DomainEntityBase
     }
 
     protected virtual bool Validate<TDomainEntityBase>(Func<ValidationResult> handle)
-            where TDomainEntityBase : DomainEntityBase
+        where TDomainEntityBase : DomainEntityBase
     {
         foreach (var validationMessage in handle().ValidationMessageCollection)
             AddValidationMessageInternal<TDomainEntityBase>(
@@ -112,11 +122,8 @@ public abstract class DomainEntityBase
         return ValidationInfo.IsValid;
     }
 
-    protected TDomainEntityBase RegisterNewInternal<TDomainEntityBase>(
-        Guid tenantId,
-        string executionUser,
-        string sourcePlatform
-    ) where TDomainEntityBase : DomainEntityBase
+    protected TDomainEntityBase RegisterNewInternal<TDomainEntityBase>(Guid tenantId, string executionUser, string sourcePlatform) 
+        where TDomainEntityBase : DomainEntityBase
     {
         return GenerateNewId<TDomainEntityBase>()
             .SetTenant<TDomainEntityBase>(tenantId)
@@ -129,16 +136,8 @@ public abstract class DomainEntityBase
             )
             .GenerateNewRegistryVersion<TDomainEntityBase>();
     }
-    protected TDomainEntityBase SetExistingInfoInternal<TDomainEntityBase>(
-        Guid id,
-        Guid tenantId,
-        string createdBy,
-        DateTimeOffset createdAt,
-        string? updatedBy,
-        DateTimeOffset? updatedAt,
-        string sourcePlatform,
-        DateTimeOffset registryVersion
-    ) where TDomainEntityBase : DomainEntityBase
+    protected TDomainEntityBase SetExistingInfoInternal<TDomainEntityBase>(Guid id, Guid tenantId, string createdBy, DateTimeOffset createdAt, string? updatedBy, DateTimeOffset? updatedAt, string sourcePlatform, DateTimeOffset registryVersion) 
+        where TDomainEntityBase : DomainEntityBase
     {
         return SetId<TDomainEntityBase>(id)
             .SetTenant<TDomainEntityBase>(tenantId)
@@ -152,10 +151,8 @@ public abstract class DomainEntityBase
             .SetRegistryVersion<TDomainEntityBase>(registryVersion);
     }
     
-    protected TDomainEntityBase RegisterModificationInternal<TDomainEntityBase>(
-        string executionUser,
-        string sourcePlatform
-    ) where TDomainEntityBase : DomainEntityBase
+    protected TDomainEntityBase RegisterModificationInternal<TDomainEntityBase>(string executionUser, string sourcePlatform) 
+        where TDomainEntityBase : DomainEntityBase
     {
         return SetAuditableInfo<TDomainEntityBase>(
             createdBy: AuditableInfo.CreatedBy,
