@@ -74,11 +74,11 @@ namespace MCB.Core.Domain.Entities.Tests.SpecificationsTests
             var domainEntitySpecifications = new DummyDomainEntitySpecifications();
 
             var createdBy = new string('a', 250);
-
             var createdAt = DateTimeProvider.GetDate().AddDays(-1);
+            var lastSourcePlatform = new string('a', 250);
 
             // Act
-            var result = domainEntitySpecifications.CreationInfoShouldRequired(createdAt, createdBy);
+            var result = domainEntitySpecifications.CreationInfoShouldRequired(createdAt, createdBy, lastSourcePlatform);
 
             // Assert
             result.Should().Be(expectedResult);
@@ -93,15 +93,20 @@ namespace MCB.Core.Domain.Entities.Tests.SpecificationsTests
             var createdAtInvalid = DateTimeOffset.MinValue;
             var createdAtValid = DateTimeProvider.GetDate();
 
-            var createdBy = string.Empty;
+            var createdByInvalid = string.Empty;
+            var createdByValid = new string('a', 250);
+
+            var lastSourcePlatform = default(string);
 
             // Act
-            var result1 = domainEntitySpecifications.CreationInfoShouldRequired(createdAtValid, createdBy);
-            var result2 = domainEntitySpecifications.CreationInfoShouldRequired(createdAtInvalid, createdBy);
+            var result1 = domainEntitySpecifications.CreationInfoShouldRequired(createdAtValid, createdByValid, lastSourcePlatform);
+            var result2 = domainEntitySpecifications.CreationInfoShouldRequired(createdAtValid, createdByInvalid, lastSourcePlatform);
+            var result3 = domainEntitySpecifications.CreationInfoShouldRequired(createdAtInvalid, createdByInvalid, lastSourcePlatform);
 
             // Assert
             result1.Should().Be(expectedResult);
             result2.Should().Be(expectedResult);
+            result3.Should().Be(expectedResult);
         }
 
         [Fact]
@@ -112,13 +117,14 @@ namespace MCB.Core.Domain.Entities.Tests.SpecificationsTests
             var domainEntitySpecifications = new DummyDomainEntitySpecifications();
 
             var createdBy = new string('a', 250);
+            var lastSourcePlatform = new string('a', 250);
 
             var createdAt1 = DateTimeProvider.GetDate().AddDays(-1);
             var createdAt2 = DateTimeProvider.GetDate();
 
             // Act
-            var result1 = domainEntitySpecifications.CreationInfoShouldValid(createdAt1, createdBy);
-            var result2 = domainEntitySpecifications.CreationInfoShouldValid(createdAt2, createdBy);
+            var result1 = domainEntitySpecifications.CreationInfoShouldValid(createdAt1, createdBy, lastSourcePlatform);
+            var result2 = domainEntitySpecifications.CreationInfoShouldValid(createdAt2, createdBy, lastSourcePlatform);
 
             // Assert
             result1.Should().Be(expectedResult);
@@ -135,14 +141,19 @@ namespace MCB.Core.Domain.Entities.Tests.SpecificationsTests
             var createdAtInvalid = DateTimeProvider.GetDate().AddDays(1);
 
             var createdByInvalid = new string('a', 251);
+            var createdByValid = new string('a', 250);
+
+            var lastSourcePlatformInvalid = new string('a', 251);
 
             // Act
-            var result1 = domainEntitySpecifications.CreationInfoShouldValid(createdAtValid, createdByInvalid);
-            var result2 = domainEntitySpecifications.CreationInfoShouldValid(createdAtInvalid, createdByInvalid);
+            var result1 = domainEntitySpecifications.CreationInfoShouldValid(createdAtValid, createdByInvalid, lastSourcePlatformInvalid);
+            var result2 = domainEntitySpecifications.CreationInfoShouldValid(createdAtInvalid, createdByValid, lastSourcePlatformInvalid);
+            var result3 = domainEntitySpecifications.CreationInfoShouldValid(createdAtInvalid, createdByInvalid, lastSourcePlatformInvalid);
 
             // Assert
             result1.Should().Be(expectedResult);
             result2.Should().Be(expectedResult);
+            result3.Should().Be(expectedResult);
         }
 
         [Fact]
@@ -153,13 +164,14 @@ namespace MCB.Core.Domain.Entities.Tests.SpecificationsTests
             var domainEntitySpecifications = new DummyDomainEntitySpecifications();
 
             var updatedBy = new string('a', 250);
+            var lastSourcePlatform = new string('a', 250);
 
             var lastUpdateDate1 = DateTimeProvider.GetDate().AddDays(-1);
             var lastUpdateDate2 = DateTimeProvider.GetDate();
 
             // Act
-            var result1 = domainEntitySpecifications.UpdateInfoShouldRequired(lastUpdateDate1, updatedBy);
-            var result2 = domainEntitySpecifications.UpdateInfoShouldRequired(lastUpdateDate2, updatedBy);
+            var result1 = domainEntitySpecifications.UpdateInfoShouldRequired(lastUpdateDate1, updatedBy, lastSourcePlatform);
+            var result2 = domainEntitySpecifications.UpdateInfoShouldRequired(lastUpdateDate2, updatedBy, lastSourcePlatform);
 
             // Assert
             result1.Should().Be(expectedResult);
@@ -175,12 +187,15 @@ namespace MCB.Core.Domain.Entities.Tests.SpecificationsTests
             var lastUpdateDateInvalid = DateTimeOffset.MinValue;
             var lastUpdateDateValid = DateTimeProvider.GetDate();
 
-            var lastUpdateBy = string.Empty;
+            var lastUpdateByInvalid = string.Empty;
+            var lastUpdateByValid = new string('a', 250);
+
+            var lastSourcePlatformInvalid = string.Empty;
 
             // Act
-            var result1 = domainEntitySpecifications.UpdateInfoShouldRequired(lastUpdateDateValid, lastUpdateBy);
-            var result2 = domainEntitySpecifications.UpdateInfoShouldRequired(lastUpdateDateInvalid, lastUpdateBy);
-            var result3 = domainEntitySpecifications.UpdateInfoShouldRequired(lastUpdateAt: null, lastUpdateBy);
+            var result1 = domainEntitySpecifications.UpdateInfoShouldRequired(lastUpdateDateValid, lastUpdateByInvalid, lastSourcePlatformInvalid);
+            var result2 = domainEntitySpecifications.UpdateInfoShouldRequired(lastUpdateDateInvalid, lastUpdateByValid, lastSourcePlatformInvalid);
+            var result3 = domainEntitySpecifications.UpdateInfoShouldRequired(lastUpdateAt: null, lastUpdateByValid, lastSourcePlatformInvalid);
 
             // Assert
             result1.Should().Be(expectedResult);
@@ -198,9 +213,10 @@ namespace MCB.Core.Domain.Entities.Tests.SpecificationsTests
             var createdAt = DateTimeProvider.GetDate().AddDays(-1);
             var lastUpdatedAt = DateTimeProvider.GetDate();
             var lastUpdatedBy = new string('a', 250);
+            var lastSourcePlatform = new string('a', 250);
 
             // Act
-            var result = domainEntitySpecifications.UpdateInfoShouldValid(createdAt, lastUpdatedAt, lastUpdatedBy);
+            var result = domainEntitySpecifications.UpdateInfoShouldValid(createdAt, lastUpdatedAt, lastUpdatedBy, lastSourcePlatform);
 
             // Assert
             result.Should().Be(expectedResult);
@@ -219,18 +235,23 @@ namespace MCB.Core.Domain.Entities.Tests.SpecificationsTests
             var futureUpdatedAtValid = DateTimeProvider.GetDate().AddDays(+1);
 
             var lastUpdatedByInvalid = new string('a', 251);
+            var lastUpdatedByValid = new string('a', 250);
+
+            var lastSourcePlatform = new string('a', 251);
 
             // Act
-            var result1 = domainEntitySpecifications.UpdateInfoShouldValid(futureCreatedAtValid, validUpdatedAtValid, lastUpdatedByInvalid);
-            var result2 = domainEntitySpecifications.UpdateInfoShouldValid(validCreatedAtValid, futureUpdatedAtValid, lastUpdatedByInvalid);
-            var result3 = domainEntitySpecifications.UpdateInfoShouldValid(validCreatedAtValid, validUpdatedAtValid, lastUpdatedByInvalid);
-            var result4 = domainEntitySpecifications.UpdateInfoShouldValid(validCreatedAtValid, lastUpdatedAt: null, lastUpdatedByInvalid);
+            var result1 = domainEntitySpecifications.UpdateInfoShouldValid(futureCreatedAtValid, validUpdatedAtValid, lastUpdatedByInvalid, lastSourcePlatform);
+            var result2 = domainEntitySpecifications.UpdateInfoShouldValid(validCreatedAtValid, futureUpdatedAtValid, lastUpdatedByInvalid, lastSourcePlatform);
+            var result3 = domainEntitySpecifications.UpdateInfoShouldValid(validCreatedAtValid, validUpdatedAtValid, lastUpdatedByInvalid, lastSourcePlatform);
+            var result4 = domainEntitySpecifications.UpdateInfoShouldValid(validCreatedAtValid, lastUpdatedAt: null, lastUpdatedByInvalid, lastSourcePlatform);
+            var result5 = domainEntitySpecifications.UpdateInfoShouldValid(validCreatedAtValid, lastUpdatedAt: null, lastUpdatedByValid, lastSourcePlatform);
 
             // Assert
             result1.Should().Be(expectedResult);
             result2.Should().Be(expectedResult);
             result3.Should().Be(expectedResult);
             result4.Should().Be(expectedResult);
+            result5.Should().Be(expectedResult);
         }
 
         [Fact]
@@ -261,7 +282,6 @@ namespace MCB.Core.Domain.Entities.Tests.SpecificationsTests
             // Assert
             result.Should().Be(expectedResult);
         }
-
 
         [Fact]
         public void DomainEntitySpecifications_RegistryVersionShouldValid_Success()

@@ -16,30 +16,34 @@ public class DomainEntitySpecifications
         return tenantId != Guid.Empty;
     }
 
-    public bool CreationInfoShouldRequired(DateTimeOffset createdAt, string createdBy)
+    public bool CreationInfoShouldRequired(DateTimeOffset createdAt, string createdBy, string lastSourcePlatform)
     {
         return createdAt > DateTimeOffset.MinValue 
-            && !string.IsNullOrWhiteSpace(createdBy);
+            && !string.IsNullOrWhiteSpace(createdBy)
+            && !string.IsNullOrWhiteSpace(lastSourcePlatform);
     }
-    public bool CreationInfoShouldValid(DateTimeOffset createdAt, string createdBy)
+    public bool CreationInfoShouldValid(DateTimeOffset createdAt, string createdBy, string lastSourcePlatform)
     {
-        return CreationInfoShouldRequired(createdAt, createdBy)
+        return CreationInfoShouldRequired(createdAt, createdBy, lastSourcePlatform)
             && createdAt <= DateTimeProvider.GetDate()
-            && createdBy.Length <= 250;
+            && createdBy.Length <= 250
+            && lastSourcePlatform.Length <= 250;
     }
 
-    public bool UpdateInfoShouldRequired(DateTimeOffset? lastUpdateAt, string lastUpdatedBy)
+    public bool UpdateInfoShouldRequired(DateTimeOffset? lastUpdateAt, string lastUpdatedBy, string lastSourcePlatform)
     {
         return lastUpdateAt is not null
             && lastUpdateAt > DateTimeOffset.MinValue
-            && !string.IsNullOrWhiteSpace(lastUpdatedBy);
+            && !string.IsNullOrWhiteSpace(lastUpdatedBy)
+            && !string.IsNullOrWhiteSpace(lastSourcePlatform);
     }
-    public bool UpdateInfoShouldValid(DateTimeOffset createdAt, DateTimeOffset? lastUpdatedAt, string lastUpdatedBy)
+    public bool UpdateInfoShouldValid(DateTimeOffset createdAt, DateTimeOffset? lastUpdatedAt, string lastUpdatedBy, string lastSourcePlatform)
     {
-        return UpdateInfoShouldRequired(lastUpdatedAt, lastUpdatedBy)
+        return UpdateInfoShouldRequired(lastUpdatedAt, lastUpdatedBy, lastSourcePlatform)
             && lastUpdatedAt > createdAt
             && lastUpdatedAt <= DateTimeProvider.GetDate()
-            && lastUpdatedBy.Length <= 250;
+            && lastUpdatedBy.Length <= 250
+            && lastSourcePlatform.Length <= 250;
     }
 
     public bool RegistryVersionShouldRequired(DateTimeOffset registryVersion)
