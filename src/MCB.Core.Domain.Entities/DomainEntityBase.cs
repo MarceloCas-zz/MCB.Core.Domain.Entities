@@ -12,7 +12,6 @@ public abstract class DomainEntityBase
     : IDomainEntity
 {
     // Fields
-    private readonly IDomainEntitySpecifications _domainEntitySpecifications;
     private ValidationInfoValueObject _validationInfoValueObject = new();
 
     // Properties
@@ -26,7 +25,6 @@ public abstract class DomainEntityBase
     protected DomainEntityBase()
     {
         AuditableInfo = new AuditableInfoValueObject();
-        _domainEntitySpecifications = CreateDomainEntitySpecificationsInstance();
     }
 
     // Private Methods
@@ -80,12 +78,6 @@ public abstract class DomainEntityBase
 
     // Protected Abstract Methods
     protected abstract DomainEntityBase CreateInstanceForCloneInternal();
-
-    // Protected Methods
-    protected virtual IDomainEntitySpecifications CreateDomainEntitySpecificationsInstance()
-    {
-        return new DomainEntitySpecifications();
-    }
 
     protected TDomainEntityBase AddValidationMessageInternal<TDomainEntityBase>(ValidationMessageType validationMessageType, string code, string description)
         where TDomainEntityBase : DomainEntityBase
