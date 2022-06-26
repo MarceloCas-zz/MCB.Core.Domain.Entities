@@ -45,28 +45,31 @@ public class DomainEntityShouldValidAfterRegisterModificationValidator<TDomainEn
         // Creation Info
         fluentValidationValidatorWrapper.RuleFor(customer => customer.AuditableInfo)
             .NotNull()
-            .Must(auditableInfo => _domainEntitySpecifications.CreationInfoShouldRequired(auditableInfo.CreatedAt, auditableInfo.CreatedBy))
+            .Must(auditableInfo => _domainEntitySpecifications.CreationInfoShouldRequired(auditableInfo.CreatedAt, auditableInfo.CreatedBy, auditableInfo.LastSourcePlatform))
             .WithErrorCode(CreateMessageCodeInternal(ValidationMessageType.Error, nameof(IDomainEntitySpecifications.CreationInfoShouldRequired)))
             .WithSeverity(Severity.Error)
-            .Must(auditableInfo => _domainEntitySpecifications.CreationInfoShouldValid(auditableInfo.CreatedAt, auditableInfo.CreatedBy))
+            .Must(auditableInfo => _domainEntitySpecifications.CreationInfoShouldValid(auditableInfo.CreatedAt, auditableInfo.CreatedBy, auditableInfo.LastSourcePlatform))
             .WithErrorCode(CreateMessageCodeInternal(ValidationMessageType.Error, nameof(IDomainEntitySpecifications.CreationInfoShouldValid)))
             .WithSeverity(Severity.Error);
 
         // Update Info
         fluentValidationValidatorWrapper.RuleFor(customer => customer.AuditableInfo)
             .NotNull()
-            .Must(auditableInfo => _domainEntitySpecifications.UpdateInfoShouldRequired(auditableInfo.LastUpdatedAt, auditableInfo.LastUpdatedBy))
+            .Must(auditableInfo => _domainEntitySpecifications.UpdateInfoShouldRequired(auditableInfo.LastUpdatedAt, auditableInfo.LastUpdatedBy, auditableInfo.LastSourcePlatform))
             .WithErrorCode(CreateMessageCodeInternal(ValidationMessageType.Error, nameof(IDomainEntitySpecifications.UpdateInfoShouldRequired)))
             .WithSeverity(Severity.Error)
-            .Must(auditableInfo => _domainEntitySpecifications.UpdateInfoShouldValid(auditableInfo.CreatedAt, auditableInfo.LastUpdatedAt, auditableInfo.CreatedBy))
+            .Must(auditableInfo => _domainEntitySpecifications.UpdateInfoShouldValid(auditableInfo.CreatedAt, auditableInfo.LastUpdatedAt, auditableInfo.CreatedBy, auditableInfo.LastSourcePlatform))
             .WithErrorCode(CreateMessageCodeInternal(ValidationMessageType.Error, nameof(IDomainEntitySpecifications.UpdateInfoShouldValid)))
             .WithSeverity(Severity.Error);
 
-
-        // Last Source Platform
-        fluentValidationValidatorWrapper.RuleFor(customer => customer.AuditableInfo.LastSourcePlatform)
-            .Must(lastSourcePlatform => _domainEntitySpecifications.SourcePlatform(lastSourcePlatform))
-            .WithErrorCode(CreateMessageCodeInternal(ValidationMessageType.Error, nameof(IDomainEntitySpecifications.TenantIdShouldRequired)))
+        // Registry Version
+        fluentValidationValidatorWrapper.RuleFor(customer => customer.RegistryVersion)
+            .NotNull()
+            .Must(registryVersion => _domainEntitySpecifications.RegistryVersionShouldRequired(registryVersion))
+            .WithErrorCode(CreateMessageCodeInternal(ValidationMessageType.Error, nameof(IDomainEntitySpecifications.CreationInfoShouldRequired)))
+            .WithSeverity(Severity.Error)
+            .Must(registryVersion => _domainEntitySpecifications.RegistryVersionShouldValid(registryVersion))
+            .WithErrorCode(CreateMessageCodeInternal(ValidationMessageType.Error, nameof(IDomainEntitySpecifications.CreationInfoShouldValid)))
             .WithSeverity(Severity.Error);
     }
 }
