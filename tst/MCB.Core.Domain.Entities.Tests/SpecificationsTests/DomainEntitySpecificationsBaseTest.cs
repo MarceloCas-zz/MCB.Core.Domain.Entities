@@ -166,16 +166,13 @@ namespace MCB.Core.Domain.Entities.Tests.SpecificationsTests
             var updatedBy = new string('a', 250);
             var lastSourcePlatform = new string('a', 250);
 
-            var lastUpdateDate1 = DateTimeProvider.GetDate().AddDays(-1);
-            var lastUpdateDate2 = DateTimeProvider.GetDate();
+            var lastUpdatedAt = DateTimeProvider.GetDate();
 
             // Act
-            var result1 = domainEntitySpecifications.UpdateInfoShouldRequired(lastUpdateDate1, updatedBy, lastSourcePlatform);
-            var result2 = domainEntitySpecifications.UpdateInfoShouldRequired(lastUpdateDate2, updatedBy, lastSourcePlatform);
+            var result = domainEntitySpecifications.UpdateInfoShouldRequired(lastUpdatedAt, updatedBy, lastSourcePlatform);
 
             // Assert
-            result1.Should().Be(expectedResult);
-            result2.Should().Be(expectedResult);
+            result.Should().Be(expectedResult);
         }
         [Fact]
         public void DomainEntitySpecifications_UpdateInfoShouldRequired_Fail()
@@ -184,23 +181,24 @@ namespace MCB.Core.Domain.Entities.Tests.SpecificationsTests
             var expectedResult = false;
             var domainEntitySpecifications = new DummyDomainEntitySpecifications();
 
-            var lastUpdateDateInvalid = DateTimeOffset.MinValue;
-            var lastUpdateDateValid = DateTimeProvider.GetDate();
+            var lastUpdatedAtInvalid = DateTimeOffset.MinValue;
+            var lastUpdatedAtValid = DateTimeProvider.GetDate();
 
-            var lastUpdateByInvalid = string.Empty;
             var lastUpdateByValid = new string('a', 250);
 
             var lastSourcePlatformInvalid = string.Empty;
 
             // Act
-            var result1 = domainEntitySpecifications.UpdateInfoShouldRequired(lastUpdateDateValid, lastUpdateByInvalid, lastSourcePlatformInvalid);
-            var result2 = domainEntitySpecifications.UpdateInfoShouldRequired(lastUpdateDateInvalid, lastUpdateByValid, lastSourcePlatformInvalid);
-            var result3 = domainEntitySpecifications.UpdateInfoShouldRequired(lastUpdateAt: null, lastUpdateByValid, lastSourcePlatformInvalid);
+            var result1 = domainEntitySpecifications.UpdateInfoShouldRequired(lastUpdatedAt: null, lastUpdateByValid, lastSourcePlatformInvalid);
+            var result2 = domainEntitySpecifications.UpdateInfoShouldRequired(lastUpdatedAtInvalid, lastUpdateByValid, lastSourcePlatformInvalid);
+            var result3 = domainEntitySpecifications.UpdateInfoShouldRequired(lastUpdatedAtValid, lastUpdatedBy: null, lastSourcePlatformInvalid);
+            var result4 = domainEntitySpecifications.UpdateInfoShouldRequired(lastUpdatedAtValid, lastUpdateByValid, lastSourcePlatformInvalid);
 
             // Assert
             result1.Should().Be(expectedResult);
             result2.Should().Be(expectedResult);
             result3.Should().Be(expectedResult);
+            result4.Should().Be(expectedResult);
         }
 
         [Fact]

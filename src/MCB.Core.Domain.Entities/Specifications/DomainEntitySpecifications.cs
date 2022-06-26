@@ -30,10 +30,10 @@ public class DomainEntitySpecifications
             && lastSourcePlatform.Length <= 250;
     }
 
-    public bool UpdateInfoShouldRequired(DateTimeOffset? lastUpdateAt, string lastUpdatedBy, string lastSourcePlatform)
+    public bool UpdateInfoShouldRequired(DateTimeOffset? lastUpdatedAt, string lastUpdatedBy, string lastSourcePlatform)
     {
-        return lastUpdateAt is not null
-            && lastUpdateAt > DateTimeOffset.MinValue
+        return lastUpdatedAt is not null
+            && lastUpdatedAt > DateTimeOffset.MinValue
             && !string.IsNullOrWhiteSpace(lastUpdatedBy)
             && !string.IsNullOrWhiteSpace(lastSourcePlatform);
     }
