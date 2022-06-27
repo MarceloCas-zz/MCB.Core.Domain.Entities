@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using MCB.Core.Domain.Entities.DomainEntitiesBase;
 using MCB.Core.Infra.CrossCutting.DateTime;
 using MCB.Core.Infra.CrossCutting.DesignPatterns.Validator.Abstractions.Enums;
 using MCB.Core.Infra.CrossCutting.DesignPatterns.Validator.Abstractions.Models;

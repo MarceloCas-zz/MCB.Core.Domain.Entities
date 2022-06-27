@@ -1,12 +1,10 @@
 ﻿using MCB.Core.Domain.Entities.Abstractions;
-using MCB.Core.Domain.Entities.Abstractions.Specifications.Interfaces;
 using MCB.Core.Domain.Entities.Abstractions.ValueObjects;
-using MCB.Core.Domain.Entities.Specifications;
 using MCB.Core.Infra.CrossCutting.DateTime;
 using MCB.Core.Infra.CrossCutting.DesignPatterns.Validator.Abstractions.Enums;
 using MCB.Core.Infra.CrossCutting.DesignPatterns.Validator.Abstractions.Models;
 
-namespace MCB.Core.Domain.Entities;
+namespace MCB.Core.Domain.Entities.DomainEntitiesBase;
 
 public abstract class DomainEntityBase
     : IDomainEntity
@@ -34,7 +32,7 @@ public abstract class DomainEntityBase
         Id = id;
         return (TDomainEntityBase)this;
     }
-    private TDomainEntityBase GenerateNewId<TDomainEntityBase>() 
+    private TDomainEntityBase GenerateNewId<TDomainEntityBase>()
         where TDomainEntityBase : DomainEntityBase
     {
         return SetId<TDomainEntityBase>(Guid.NewGuid());
@@ -45,7 +43,7 @@ public abstract class DomainEntityBase
         TenantId = tenantId;
         return (TDomainEntityBase)this;
     }
-    private TDomainEntityBase SetAuditableInfo<TDomainEntityBase>(string createdBy, DateTimeOffset createdAt, string? updatedBy, DateTimeOffset? updatedAt, string sourcePlatform) 
+    private TDomainEntityBase SetAuditableInfo<TDomainEntityBase>(string createdBy, DateTimeOffset createdAt, string? updatedBy, DateTimeOffset? updatedAt, string sourcePlatform)
         where TDomainEntityBase : DomainEntityBase
     {
         AuditableInfo = new AuditableInfoValueObject(
@@ -56,7 +54,7 @@ public abstract class DomainEntityBase
             sourcePlatform
         );
 
-        return (TDomainEntityBase) this;
+        return (TDomainEntityBase)this;
     }
     private TDomainEntityBase SetRegistryVersion<TDomainEntityBase>(DateTimeOffset registryVersion)
          where TDomainEntityBase : DomainEntityBase
@@ -64,7 +62,7 @@ public abstract class DomainEntityBase
         RegistryVersion = registryVersion;
         return (TDomainEntityBase)this;
     }
-    private TDomainEntityBase GenerateNewRegistryVersion<TDomainEntityBase>() 
+    private TDomainEntityBase GenerateNewRegistryVersion<TDomainEntityBase>()
         where TDomainEntityBase : DomainEntityBase
     {
         return SetRegistryVersion<TDomainEntityBase>(DateTimeProvider.GetDate());
@@ -114,7 +112,7 @@ public abstract class DomainEntityBase
         return ValidationInfo.IsValid;
     }
 
-    protected TDomainEntityBase RegisterNewInternal<TDomainEntityBase>(Guid tenantId, string executionUser, string sourcePlatform) 
+    protected TDomainEntityBase RegisterNewInternal<TDomainEntityBase>(Guid tenantId, string executionUser, string sourcePlatform)
         where TDomainEntityBase : DomainEntityBase
     {
         return GenerateNewId<TDomainEntityBase>()
@@ -128,7 +126,7 @@ public abstract class DomainEntityBase
             )
             .GenerateNewRegistryVersion<TDomainEntityBase>();
     }
-    protected TDomainEntityBase SetExistingInfoInternal<TDomainEntityBase>(Guid id, Guid tenantId, string createdBy, DateTimeOffset createdAt, string? updatedBy, DateTimeOffset? updatedAt, string sourcePlatform, DateTimeOffset registryVersion) 
+    protected TDomainEntityBase SetExistingInfoInternal<TDomainEntityBase>(Guid id, Guid tenantId, string createdBy, DateTimeOffset createdAt, string? updatedBy, DateTimeOffset? updatedAt, string sourcePlatform, DateTimeOffset registryVersion)
         where TDomainEntityBase : DomainEntityBase
     {
         return SetId<TDomainEntityBase>(id)
@@ -142,8 +140,8 @@ public abstract class DomainEntityBase
             )
             .SetRegistryVersion<TDomainEntityBase>(registryVersion);
     }
-    
-    protected TDomainEntityBase RegisterModificationInternal<TDomainEntityBase>(string executionUser, string sourcePlatform) 
+
+    protected TDomainEntityBase RegisterModificationInternal<TDomainEntityBase>(string executionUser, string sourcePlatform)
         where TDomainEntityBase : DomainEntityBase
     {
         return SetAuditableInfo<TDomainEntityBase>(

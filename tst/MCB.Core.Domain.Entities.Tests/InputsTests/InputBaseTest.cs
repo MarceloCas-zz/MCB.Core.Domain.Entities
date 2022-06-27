@@ -1,5 +1,5 @@
 ﻿using FluentAssertions;
-using MCB.Core.Domain.Entities.Inputs;
+using MCB.Core.Domain.Entities.DomainEntitiesBase.Inputs;
 using System;
 using Xunit;
 
