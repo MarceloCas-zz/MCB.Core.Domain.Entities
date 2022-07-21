@@ -315,19 +315,19 @@ public class DomainEntityBaseTest
                 new ValidationResult(
                     new List<ValidationMessage> {
                             new ValidationMessage(
-                                validationMessageType: ValidationMessageType.Error,
-                                code: ERROR_CODE,
-                                description: ERROR_DESCRIPTION
+                                ValidationMessageType: ValidationMessageType.Error,
+                                Code: ERROR_CODE,
+                                Description: ERROR_DESCRIPTION
                             ),
                             new ValidationMessage(
-                                validationMessageType: ValidationMessageType.Warning,
-                                code: WARNING_CODE,
-                                description: WARNING_DESCRIPTION
+                                ValidationMessageType: ValidationMessageType.Warning,
+                                Code: WARNING_CODE,
+                                Description: WARNING_DESCRIPTION
                             ),
                             new ValidationMessage(
-                                validationMessageType: ValidationMessageType.Information,
-                                code: INFO_CODE,
-                                description: INFO_DESCRIPTION
+                                ValidationMessageType: ValidationMessageType.Information,
+                                Code: INFO_CODE,
+                                Description: INFO_DESCRIPTION
                             )
                     }
                 )
