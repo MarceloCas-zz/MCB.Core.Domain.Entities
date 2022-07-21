@@ -6,8 +6,7 @@ using MCB.Core.Domain.Entities.Abstractions.Specifications.Interfaces;
 namespace MCB.Core.Domain.Entities.DomainEntitiesBase.Validators;
 
 public abstract class InputBaseValidator<TInputBase>
-    : ValidatorBase<TInputBase>,
-    Infra.CrossCutting.DesignPatterns.Validator.Abstractions.IValidator<TInputBase>
+    : ValidatorBase<TInputBase>
     where TInputBase : InputBase
 {
     // Fields
