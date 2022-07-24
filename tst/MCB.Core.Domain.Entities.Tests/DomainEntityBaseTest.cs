@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using MCB.Core.Domain.Entities.Abstractions.ValueObjects;
 using MCB.Core.Domain.Entities.DomainEntitiesBase;
 using MCB.Core.Infra.CrossCutting.DateTime;
 using MCB.Core.Infra.CrossCutting.DesignPatterns.Validator.Abstractions.Enums;
@@ -334,6 +335,41 @@ public class DomainEntityBaseTest
         customer.ValidationInfo.ValidationMessageCollection.ToList()[2].Description.Should().Be("ERROR");
     }
 
+    [Fact]
+    public void DomainEntityBase_Should_AddFromValidationInfo()
+    {
+        // Arrange and Act
+        var customer = new Customer();
+        var validationInfo = new ValidationInfoValueObject();
+
+        validationInfo.AddInformationValidationMessage("INFO_1", "INFORMATION");
+        validationInfo.AddWarningValidationMessage("WARNING_1", "WARNING");
+        validationInfo.AddErrorValidationMessage("ERROR_1", "ERROR");
+
+        // Act
+        customer.AddFromValidationInfo(validationInfo);
+
+        // Assert
+        customer.ValidationInfo.Should().NotBeNull();
+        customer.ValidationInfo.IsValid.Should().BeFalse();
+        customer.ValidationInfo.HasValidationMessage.Should().BeTrue();
+        customer.ValidationInfo.HasError.Should().BeTrue();
+        customer.ValidationInfo.ValidationMessageCollection.Should().NotBeNull();
+        customer.ValidationInfo.ValidationMessageCollection.Should().HaveCount(3);
+
+        customer.ValidationInfo.ValidationMessageCollection.ToList()[0].ValidationMessageType.Should().Be(ValidationMessageType.Information);
+        customer.ValidationInfo.ValidationMessageCollection.ToList()[0].Code.Should().Be("INFO_1");
+        customer.ValidationInfo.ValidationMessageCollection.ToList()[0].Description.Should().Be("INFORMATION");
+
+        customer.ValidationInfo.ValidationMessageCollection.ToList()[1].ValidationMessageType.Should().Be(ValidationMessageType.Warning);
+        customer.ValidationInfo.ValidationMessageCollection.ToList()[1].Code.Should().Be("WARNING_1");
+        customer.ValidationInfo.ValidationMessageCollection.ToList()[1].Description.Should().Be("WARNING");
+
+        customer.ValidationInfo.ValidationMessageCollection.ToList()[2].ValidationMessageType.Should().Be(ValidationMessageType.Error);
+        customer.ValidationInfo.ValidationMessageCollection.ToList()[2].Code.Should().Be("ERROR_1");
+        customer.ValidationInfo.ValidationMessageCollection.ToList()[2].Description.Should().Be("ERROR");
+    }
+
     #region Models
     public class Customer
         : DomainEntityBase
@@ -371,6 +407,9 @@ public class DomainEntityBaseTest
 
         public void AddFromValidationResult(ValidationResult validationResult)
             => AddFromValidationResultInternal(validationResult);
+
+        public void AddFromValidationInfo(ValidationInfoValueObject validationInfo)
+            => AddFromValidationInfoInternal(validationInfo);
 
         public bool Validate()
         {

@@ -109,6 +109,14 @@ public abstract class DomainEntityBase
         foreach (var validationMessage in validationResult.ValidationMessageCollection)
             AddValidationMessageInternal(validationMessage);
     }
+    protected void AddFromValidationInfoInternal(ValidationInfoValueObject validationInfo)
+    {
+        if (!validationInfo.HasValidationMessage)
+            return;
+
+        foreach (var validationMessage in validationInfo.ValidationMessageCollection)
+            AddValidationMessageInternal(validationMessage);
+    }
 
     protected virtual bool Validate(Func<ValidationResult> handle)
     {
