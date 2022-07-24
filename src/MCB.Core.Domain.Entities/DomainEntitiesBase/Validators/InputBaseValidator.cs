@@ -15,35 +15,35 @@ public abstract class InputBaseValidator<TInputBase>
     {
         fluentValidationValidatorWrapper.RuleFor(input => input.TenantId)
             .Must(tenantId => tenantId != Guid.Empty)
-            .WithErrorCode(IInputBaseValidator<TInputBase>.InputBaseShouldHaveTenantIdErrorCode)
-            .WithMessage(IInputBaseValidator<TInputBase>.InputBaseShouldHaveTenantIdMessage)
-            .WithSeverity(IInputBaseValidator<TInputBase>.InputBaseShouldHaveTenantIdSeverity);
+            .WithErrorCode(IInputBaseValidator.InputBaseShouldHaveTenantIdErrorCode)
+            .WithMessage(IInputBaseValidator.InputBaseShouldHaveTenantIdMessage)
+            .WithSeverity(IInputBaseValidator.InputBaseShouldHaveTenantIdSeverity);
 
         fluentValidationValidatorWrapper.RuleFor(input => input.ExecutionUser)
             .Must(executionUser => !string.IsNullOrWhiteSpace(executionUser))
-            .WithErrorCode(IInputBaseValidator<TInputBase>.InputBaseShouldHaveExecutionUserErrorCode)
-            .WithMessage(IInputBaseValidator<TInputBase>.InputBaseShouldHaveExecutionUserMessage)
-            .WithSeverity(IInputBaseValidator<TInputBase>.InputBaseShouldHaveExecutionUserSeverity);
+            .WithErrorCode(IInputBaseValidator.InputBaseShouldHaveExecutionUserErrorCode)
+            .WithMessage(IInputBaseValidator.InputBaseShouldHaveExecutionUserMessage)
+            .WithSeverity(IInputBaseValidator.InputBaseShouldHaveExecutionUserSeverity);
 
         fluentValidationValidatorWrapper.RuleFor(input => input.ExecutionUser)
             .Must(executionUser => executionUser?.Length <= 150)
             .When(inputBase => !string.IsNullOrWhiteSpace(inputBase.ExecutionUser))
-            .WithErrorCode(IInputBaseValidator<TInputBase>.InputBaseShouldHaveExecutionUserWithValidLengthErrorCode)
-            .WithMessage(IInputBaseValidator<TInputBase>.InputBaseShouldHaveExecutionUserWithValidLengthMessage)
-            .WithSeverity(IInputBaseValidator<TInputBase>.InputBaseShouldHaveExecutionUserWithValidLengthSeverity);
+            .WithErrorCode(IInputBaseValidator.InputBaseShouldHaveExecutionUserWithValidLengthErrorCode)
+            .WithMessage(IInputBaseValidator.InputBaseShouldHaveExecutionUserWithValidLengthMessage)
+            .WithSeverity(IInputBaseValidator.InputBaseShouldHaveExecutionUserWithValidLengthSeverity);
 
         fluentValidationValidatorWrapper.RuleFor(input => input.SourcePlatform)
             .Must(sourcePlatform => !string.IsNullOrWhiteSpace(sourcePlatform))
-            .WithErrorCode(IInputBaseValidator<TInputBase>.InputBaseShouldHaveSourcePlatformErrorCode)
-            .WithMessage(IInputBaseValidator<TInputBase>.InputBaseShouldHaveSourcePlatformMessage)
-            .WithSeverity(IInputBaseValidator<TInputBase>.InputBaseShouldHaveSourcePlatformSeverity);
+            .WithErrorCode(IInputBaseValidator.InputBaseShouldHaveSourcePlatformErrorCode)
+            .WithMessage(IInputBaseValidator.InputBaseShouldHaveSourcePlatformMessage)
+            .WithSeverity(IInputBaseValidator.InputBaseShouldHaveSourcePlatformSeverity);
 
         fluentValidationValidatorWrapper.RuleFor(input => input.SourcePlatform)
             .Must(sourcePlatform => sourcePlatform?.Length <= 150)
             .When(inputBase => !string.IsNullOrWhiteSpace(inputBase.SourcePlatform))
-            .WithErrorCode(IInputBaseValidator<TInputBase>.InputBaseShouldHaveSourcePlatformWithValidLengthErrorCode)
-            .WithMessage(IInputBaseValidator<TInputBase>.InputBaseShouldHaveSourcePlatformWithValidLengthMessage)
-            .WithSeverity(IInputBaseValidator<TInputBase>.InputBaseShouldHaveSourcePlatformWithValidLengthSeverity);
+            .WithErrorCode(IInputBaseValidator.InputBaseShouldHaveSourcePlatformWithValidLengthErrorCode)
+            .WithMessage(IInputBaseValidator.InputBaseShouldHaveSourcePlatformWithValidLengthMessage)
+            .WithSeverity(IInputBaseValidator.InputBaseShouldHaveSourcePlatformWithValidLengthSeverity);
 
         ConfigureFluentValidationConcreteValidatorInternal(fluentValidationValidatorWrapper);
     }

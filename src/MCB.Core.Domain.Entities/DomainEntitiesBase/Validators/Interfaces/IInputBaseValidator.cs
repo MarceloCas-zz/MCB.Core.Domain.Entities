@@ -3,9 +3,7 @@ using MCB.Core.Infra.CrossCutting.DesignPatterns.Validator.Abstractions;
 
 namespace MCB.Core.Domain.Entities.DomainEntitiesBase.Validators.Interfaces;
 
-public interface IInputBaseValidator<TInputBase>
-    : IValidator<TInputBase>
-    where TInputBase : InputBase
+public interface IInputBaseValidator
 {
     // TenantId
     static readonly string InputBaseShouldHaveTenantIdErrorCode = nameof(InputBaseShouldHaveTenantIdErrorCode);
@@ -29,4 +27,11 @@ public interface IInputBaseValidator<TInputBase>
     static readonly string InputBaseShouldHaveSourcePlatformWithValidLengthErrorCode = nameof(InputBaseShouldHaveSourcePlatformWithValidLengthErrorCode);
     static readonly string InputBaseShouldHaveSourcePlatformWithValidLengthMessage = nameof(InputBaseShouldHaveSourcePlatformWithValidLengthMessage);
     static readonly FluentValidation.Severity InputBaseShouldHaveSourcePlatformWithValidLengthSeverity = FluentValidation.Severity.Error;
+}
+
+public interface IInputBaseValidator<TInputBase>
+    : IValidator<TInputBase>
+    where TInputBase : InputBase
+{
+    
 }
