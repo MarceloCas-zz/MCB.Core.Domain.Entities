@@ -301,17 +301,17 @@ public class DomainEntityBaseTest
             => AddValidationMessageExposed(validationMessageType, code, description);
 
         public void AddInformationValidationMessageExposed(string code, string description)
-            => AddInformationValidationMessageInternal<Customer>(code, description);
+            => AddInformationValidationMessageInternal(code, description);
 
         public void AddWarningValidationMessageExposed(string code, string description)
-            => AddWarningValidationMessageInternal<Customer>(code, description);
+            => AddWarningValidationMessageInternal(code, description);
 
         public void AddErrorValidationMessageExposed(string code, string description)
-            => AddErrorValidationMessageInternal<Customer>(code, description);
+            => AddErrorValidationMessageInternal(code, description);
 
         public bool Validate()
         {
-            return Validate<Customer>(() =>
+            return Validate(() =>
                 new ValidationResult(
                     new List<ValidationMessage> {
                             new ValidationMessage(

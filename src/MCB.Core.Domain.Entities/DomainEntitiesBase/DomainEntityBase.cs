@@ -77,33 +77,27 @@ public abstract class DomainEntityBase
     // Protected Abstract Methods
     protected abstract DomainEntityBase CreateInstanceForCloneInternal();
 
-    protected TDomainEntityBase AddValidationMessageInternal<TDomainEntityBase>(ValidationMessageType validationMessageType, string code, string description)
-        where TDomainEntityBase : DomainEntityBase
+    protected void AddValidationMessageInternal(ValidationMessageType validationMessageType, string code, string description)
     {
         _validationInfoValueObject.AddValidationMessage(validationMessageType, code, description);
-        return (TDomainEntityBase)this;
     }
-    protected TDomainEntityBase AddInformationValidationMessageInternal<TDomainEntityBase>(string code, string description)
-        where TDomainEntityBase : DomainEntityBase
+    protected void AddInformationValidationMessageInternal(string code, string description)
     {
-        return AddValidationMessageInternal<TDomainEntityBase>(ValidationMessageType.Information, code, description);
+        AddValidationMessageInternal(ValidationMessageType.Information, code, description);
     }
-    protected TDomainEntityBase AddWarningValidationMessageInternal<TDomainEntityBase>(string code, string description)
-        where TDomainEntityBase : DomainEntityBase
+    protected void AddWarningValidationMessageInternal(string code, string description)
     {
-        return AddValidationMessageInternal<TDomainEntityBase>(ValidationMessageType.Warning, code, description);
+        AddValidationMessageInternal(ValidationMessageType.Warning, code, description);
     }
-    protected TDomainEntityBase AddErrorValidationMessageInternal<TDomainEntityBase>(string code, string description)
-        where TDomainEntityBase : DomainEntityBase
+    protected void AddErrorValidationMessageInternal(string code, string description)
     {
-        return AddValidationMessageInternal<TDomainEntityBase>(ValidationMessageType.Error, code, description);
+        AddValidationMessageInternal(ValidationMessageType.Error, code, description);
     }
 
-    protected virtual bool Validate<TDomainEntityBase>(Func<ValidationResult> handle)
-        where TDomainEntityBase : DomainEntityBase
+    protected virtual bool Validate(Func<ValidationResult> handle)
     {
         foreach (var validationMessage in handle().ValidationMessageCollection)
-            AddValidationMessageInternal<TDomainEntityBase>(
+            AddValidationMessageInternal(
                 validationMessage.ValidationMessageType,
                 validationMessage.Code,
                 validationMessage.Description
