@@ -81,6 +81,14 @@ public abstract class DomainEntityBase
     {
         _validationInfoValueObject.AddValidationMessage(validationMessageType, code, description);
     }
+    protected void AddValidationMessageInternal(ValidationMessage validationMessage)
+    {
+        _validationInfoValueObject.AddValidationMessage(
+            validationMessage.ValidationMessageType, 
+            validationMessage.Code, 
+            validationMessage.Description
+        );
+    }
     protected void AddInformationValidationMessageInternal(string code, string description)
     {
         AddValidationMessageInternal(ValidationMessageType.Information, code, description);
@@ -92,6 +100,14 @@ public abstract class DomainEntityBase
     protected void AddErrorValidationMessageInternal(string code, string description)
     {
         AddValidationMessageInternal(ValidationMessageType.Error, code, description);
+    }
+    protected void AddFromValidationResultInternal(ValidationResult validationResult)
+    {
+        if (!validationResult.HasValidationMessage)
+            return;
+
+        foreach (var validationMessage in validationResult.ValidationMessageCollection)
+            AddValidationMessageInternal(validationMessage);
     }
 
     protected virtual bool Validate(Func<ValidationResult> handle)

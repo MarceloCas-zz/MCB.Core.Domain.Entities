@@ -121,11 +121,15 @@ public class DomainEntityBaseTest
     {
         // Arrange
         var customer = new Customer();
+        var customer2 = new Customer();
 
         // Act
-        customer.AddInformationValidationMessageExposed("INFO_1", "INFORMATION");
-        customer.AddWarningValidationMessageExposed("WARNING_1", "WARNING");
-        customer.AddErrorValidationMessageExposed("ERROR_1", "ERROR");
+        customer.AddInformationValidationMessage("INFO_1", "INFORMATION");
+        customer.AddWarningValidationMessage("WARNING_1", "WARNING");
+        customer.AddErrorValidationMessage("ERROR_1", "ERROR");
+
+        foreach (var validationMessage in customer.ValidationInfo.ValidationMessageCollection)
+            customer2.AddValidationMessage(validationMessage);
 
         // Assert
         customer.ValidationInfo.Should().NotBeNull();
@@ -146,6 +150,25 @@ public class DomainEntityBaseTest
         customer.ValidationInfo.ValidationMessageCollection.ToList()[2].ValidationMessageType.Should().Be(ValidationMessageType.Error);
         customer.ValidationInfo.ValidationMessageCollection.ToList()[2].Code.Should().Be("ERROR_1");
         customer.ValidationInfo.ValidationMessageCollection.ToList()[2].Description.Should().Be("ERROR");
+
+        customer2.ValidationInfo.Should().NotBeNull();
+        customer2.ValidationInfo.IsValid.Should().BeFalse();
+        customer2.ValidationInfo.HasValidationMessage.Should().BeTrue();
+        customer2.ValidationInfo.HasError.Should().BeTrue();
+        customer2.ValidationInfo.ValidationMessageCollection.Should().NotBeNull();
+        customer2.ValidationInfo.ValidationMessageCollection.Should().HaveCount(3);
+
+        customer2.ValidationInfo.ValidationMessageCollection.ToList()[0].ValidationMessageType.Should().Be(ValidationMessageType.Information);
+        customer2.ValidationInfo.ValidationMessageCollection.ToList()[0].Code.Should().Be("INFO_1");
+        customer2.ValidationInfo.ValidationMessageCollection.ToList()[0].Description.Should().Be("INFORMATION");
+
+        customer2.ValidationInfo.ValidationMessageCollection.ToList()[1].ValidationMessageType.Should().Be(ValidationMessageType.Warning);
+        customer2.ValidationInfo.ValidationMessageCollection.ToList()[1].Code.Should().Be("WARNING_1");
+        customer2.ValidationInfo.ValidationMessageCollection.ToList()[1].Description.Should().Be("WARNING");
+
+        customer2.ValidationInfo.ValidationMessageCollection.ToList()[2].ValidationMessageType.Should().Be(ValidationMessageType.Error);
+        customer2.ValidationInfo.ValidationMessageCollection.ToList()[2].Code.Should().Be("ERROR_1");
+        customer2.ValidationInfo.ValidationMessageCollection.ToList()[2].Description.Should().Be("ERROR");
     }
 
     [Fact]
@@ -155,9 +178,9 @@ public class DomainEntityBaseTest
         var customer = new Customer();
 
         // Act
-        customer.AddInformationValidationMessageExposed("INFO_1", "INFORMATION");
-        customer.AddWarningValidationMessageExposed("WARNING_1", "WARNING");
-        customer.AddErrorValidationMessageExposed("ERROR_1", "ERROR");
+        customer.AddInformationValidationMessage("INFO_1", "INFORMATION");
+        customer.AddWarningValidationMessage("WARNING_1", "WARNING");
+        customer.AddErrorValidationMessage("ERROR_1", "ERROR");
         customer.ValidationInfo.AddErrorValidationMessage("ERROR_2", "ERROR");
 
         // Assert
@@ -194,14 +217,14 @@ public class DomainEntityBaseTest
 
         customer.RegisterNewExposed(tenantId, executionUser, sourcePlatform);
 
-        customer.AddInformationValidationMessageExposed("INFO_1", "INFORMATION");
-        customer.AddWarningValidationMessageExposed("WARNING_1", "WARNING");
-        customer.AddErrorValidationMessageExposed("ERROR_1", "ERROR");
+        customer.AddInformationValidationMessage("INFO_1", "INFORMATION");
+        customer.AddWarningValidationMessage("WARNING_1", "WARNING");
+        customer.AddErrorValidationMessage("ERROR_1", "ERROR");
         customer.ValidationInfo.AddErrorValidationMessage("ERROR_2", "ERROR");
 
         // Act
         var newCustomer = customer.DeepCloneInternalExposed();
-        customer.AddErrorValidationMessageExposed("ERROR_2", "ERROR");
+        customer.AddErrorValidationMessage("ERROR_2", "ERROR");
         customer.SetExistingInfoExposed(
             id: Guid.NewGuid(),
             tenantId: Guid.NewGuid(),
@@ -276,6 +299,41 @@ public class DomainEntityBaseTest
         validationMessageCollection[2].Description.Should().Be(Customer.INFO_DESCRIPTION);
     }
 
+    [Fact]
+    public void DomainEntityBase_Should_AddFromValidationResult()
+    {
+        // Arrange
+        var customer = new Customer();
+        var validationResult = new ValidationResult(new[] {
+            new ValidationMessage(ValidationMessageType.Information, "INFO_1", "INFORMATION"),
+            new ValidationMessage(ValidationMessageType.Warning, "WARNING_1", "WARNING"),
+            new ValidationMessage(ValidationMessageType.Error, "ERROR_1", "ERROR"),
+        });
+
+        // Act
+        customer.AddFromValidationResult(validationResult);
+
+        // Assert
+        customer.ValidationInfo.Should().NotBeNull();
+        customer.ValidationInfo.IsValid.Should().BeFalse();
+        customer.ValidationInfo.HasValidationMessage.Should().BeTrue();
+        customer.ValidationInfo.HasError.Should().BeTrue();
+        customer.ValidationInfo.ValidationMessageCollection.Should().NotBeNull();
+        customer.ValidationInfo.ValidationMessageCollection.Should().HaveCount(3);
+
+        customer.ValidationInfo.ValidationMessageCollection.ToList()[0].ValidationMessageType.Should().Be(ValidationMessageType.Information);
+        customer.ValidationInfo.ValidationMessageCollection.ToList()[0].Code.Should().Be("INFO_1");
+        customer.ValidationInfo.ValidationMessageCollection.ToList()[0].Description.Should().Be("INFORMATION");
+
+        customer.ValidationInfo.ValidationMessageCollection.ToList()[1].ValidationMessageType.Should().Be(ValidationMessageType.Warning);
+        customer.ValidationInfo.ValidationMessageCollection.ToList()[1].Code.Should().Be("WARNING_1");
+        customer.ValidationInfo.ValidationMessageCollection.ToList()[1].Description.Should().Be("WARNING");
+
+        customer.ValidationInfo.ValidationMessageCollection.ToList()[2].ValidationMessageType.Should().Be(ValidationMessageType.Error);
+        customer.ValidationInfo.ValidationMessageCollection.ToList()[2].Code.Should().Be("ERROR_1");
+        customer.ValidationInfo.ValidationMessageCollection.ToList()[2].Description.Should().Be("ERROR");
+    }
+
     #region Models
     public class Customer
         : DomainEntityBase
@@ -297,17 +355,22 @@ public class DomainEntityBaseTest
         }
 
         // Protected Methods
-        public void AddValidationMessageExposed(ValidationMessageType validationMessageType, string code, string description)
-            => AddValidationMessageExposed(validationMessageType, code, description);
+        public void AddValidationMessage(ValidationMessageType validationMessageType, string code, string description)
+            => AddValidationMessageInternal(validationMessageType, code, description);
+        public void AddValidationMessage(ValidationMessage validationMessage)
+            => AddValidationMessageInternal(validationMessage);
 
-        public void AddInformationValidationMessageExposed(string code, string description)
+        public void AddInformationValidationMessage(string code, string description)
             => AddInformationValidationMessageInternal(code, description);
 
-        public void AddWarningValidationMessageExposed(string code, string description)
+        public void AddWarningValidationMessage(string code, string description)
             => AddWarningValidationMessageInternal(code, description);
 
-        public void AddErrorValidationMessageExposed(string code, string description)
+        public void AddErrorValidationMessage(string code, string description)
             => AddErrorValidationMessageInternal(code, description);
+
+        public void AddFromValidationResult(ValidationResult validationResult)
+            => AddFromValidationResultInternal(validationResult);
 
         public bool Validate()
         {
