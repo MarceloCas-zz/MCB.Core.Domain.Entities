@@ -129,6 +129,17 @@ public abstract class DomainEntityBase
 
         return ValidationInfo.IsValid;
     }
+    protected virtual bool Validate(Func<ValidationInfoValueObject> handle)
+    {
+        foreach (var validationMessage in handle().ValidationMessageCollection)
+            AddValidationMessageInternal(
+                validationMessage.ValidationMessageType,
+                validationMessage.Code,
+                validationMessage.Description
+            );
+
+        return ValidationInfo.IsValid;
+    }
 
     protected TDomainEntityBase RegisterNewInternal<TDomainEntityBase>(Guid tenantId, string executionUser, string sourcePlatform)
         where TDomainEntityBase : DomainEntityBase
