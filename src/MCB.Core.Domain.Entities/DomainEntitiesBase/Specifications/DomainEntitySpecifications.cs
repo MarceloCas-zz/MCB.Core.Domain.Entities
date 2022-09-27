@@ -1,11 +1,21 @@
 ﻿using MCB.Core.Domain.Entities.Abstractions.Specifications.Interfaces;
-using MCB.Core.Infra.CrossCutting.DateTime;
+using MCB.Core.Infra.CrossCutting.Abstractions.DateTime;
 
 namespace MCB.Core.Domain.Entities.DomainEntitiesBase.Specifications;
 
 public class DomainEntitySpecifications
     : IDomainEntitySpecifications
 {
+    // Fields
+    private readonly IDateTimeProvider _dateTimeProvider;
+
+    // Constructors
+    public DomainEntitySpecifications(IDateTimeProvider dateTimeProvider)
+    {
+        _dateTimeProvider = dateTimeProvider;
+    }
+
+    // Constructors
     public bool IdShouldRequired(Guid id)
     {
         return id != Guid.Empty;
@@ -23,7 +33,7 @@ public class DomainEntitySpecifications
     public bool CreatedAtShouldValid(DateTimeOffset createdAt)
     {
         return CreatedAtShouldRequired(createdAt)
-            && createdAt <= DateTimeProvider.GetDate();
+            && createdAt <= _dateTimeProvider.GetDate();
     }
 
     public bool CreatedByShouldRequired(string createdBy)
@@ -45,7 +55,7 @@ public class DomainEntitySpecifications
     {
         return LastUpdatedAtShouldRequired(lastUpdatedAt)
             && lastUpdatedAt > createdAt
-            && lastUpdatedAt <= DateTimeProvider.GetDate();
+            && lastUpdatedAt <= _dateTimeProvider.GetDate();
     }
 
     public bool LastUpdatedByShouldRequired(string lastUpdatedBy)
@@ -75,6 +85,6 @@ public class DomainEntitySpecifications
     public bool RegistryVersionShouldValid(DateTimeOffset registryVersion)
     {
         return RegistryVersionShouldRequired(registryVersion)
-            && registryVersion <= DateTimeProvider.GetDate();
+            && registryVersion <= _dateTimeProvider.GetDate();
     }
 }

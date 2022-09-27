@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using MCB.Core.Domain.Entities.DomainEntitiesBase.Specifications;
+using MCB.Core.Infra.CrossCutting.Abstractions.DateTime;
 using MCB.Core.Infra.CrossCutting.DateTime;
 using System;
 using Xunit;
@@ -12,8 +13,9 @@ namespace MCB.Core.Domain.Entities.Tests.SpecificationsTests
         public void DomainEntitySpecifications_IdShouldRequired_Success()
         {
             // Arrange
+            var dateTimeProvider = new DateTimeProvider();
             var expectedResult = true;
-            var domainEntitySpecifications = new DummyDomainEntitySpecifications();
+            var domainEntitySpecifications = new DummyDomainEntitySpecifications(dateTimeProvider);
             var id = Guid.NewGuid();
 
             // Act
@@ -26,8 +28,9 @@ namespace MCB.Core.Domain.Entities.Tests.SpecificationsTests
         public void DomainEntitySpecifications_IdShouldRequired_Fail()
         {
             // Arrange
+            var dateTimeProvider = new DateTimeProvider();
             var expectedResult = false;
-            var domainEntitySpecifications = new DummyDomainEntitySpecifications();
+            var domainEntitySpecifications = new DummyDomainEntitySpecifications(dateTimeProvider);
             var id = Guid.Empty;
 
             // Act
@@ -41,8 +44,9 @@ namespace MCB.Core.Domain.Entities.Tests.SpecificationsTests
         public void DomainEntitySpecifications_TenantIdShouldRequired_Success()
         {
             // Arrange
+            var dateTimeProvider = new DateTimeProvider();
             var expectedResult = true;
-            var domainEntitySpecifications = new DummyDomainEntitySpecifications();
+            var domainEntitySpecifications = new DummyDomainEntitySpecifications(dateTimeProvider);
             var teiantId = Guid.NewGuid();
 
             // Act
@@ -55,8 +59,9 @@ namespace MCB.Core.Domain.Entities.Tests.SpecificationsTests
         public void DomainEntitySpecifications_TenantIdShouldRequired_Fail()
         {
             // Arrange
+            var dateTimeProvider = new DateTimeProvider();
             var expectedResult = false;
-            var domainEntitySpecifications = new DummyDomainEntitySpecifications();
+            var domainEntitySpecifications = new DummyDomainEntitySpecifications(dateTimeProvider);
             var tenantId = Guid.Empty;
 
             // Act
@@ -70,9 +75,10 @@ namespace MCB.Core.Domain.Entities.Tests.SpecificationsTests
         public void DomainEntitySpecification_CreatedAtShouldRequired_Success()
         {
             // Arrange
+            var dateTimeProvider = new DateTimeProvider();
             var expectedResult = true;
-            var createdAt = DateTimeProvider.GetDate();
-            var domainEntitySpecifications = new DummyDomainEntitySpecifications();
+            var createdAt = dateTimeProvider.GetDate();
+            var domainEntitySpecifications = new DummyDomainEntitySpecifications(dateTimeProvider);
 
             // Act
             var result = domainEntitySpecifications.CreatedAtShouldRequired(createdAt);
@@ -84,9 +90,10 @@ namespace MCB.Core.Domain.Entities.Tests.SpecificationsTests
         public void DomainEntitySpecification_CreatedAtShouldRequired_Error()
         {
             // Arrange
+            var dateTimeProvider = new DateTimeProvider();
             var expectedResult = false;
             var createdAt = DateTimeOffset.MinValue;
-            var domainEntitySpecifications = new DummyDomainEntitySpecifications();
+            var domainEntitySpecifications = new DummyDomainEntitySpecifications(dateTimeProvider);
 
             // Act
             var result = domainEntitySpecifications.CreatedAtShouldRequired(createdAt);
@@ -99,10 +106,11 @@ namespace MCB.Core.Domain.Entities.Tests.SpecificationsTests
         public void DomainEntitySpecification_CreatedAtShouldValid_Success()
         {
             // Arrange
+            var dateTimeProvider = new DateTimeProvider();
             var expectedResult = true;
-            var createdAt1 = DateTimeProvider.GetDate();
-            var createdAt2 = DateTimeProvider.GetDate().AddDays(-1);
-            var domainEntitySpecifications = new DummyDomainEntitySpecifications();
+            var createdAt1 = dateTimeProvider.GetDate();
+            var createdAt2 = dateTimeProvider.GetDate().AddDays(-1);
+            var domainEntitySpecifications = new DummyDomainEntitySpecifications(dateTimeProvider);
 
             // Act
             var result1 = domainEntitySpecifications.CreatedAtShouldValid(createdAt1);
@@ -116,10 +124,11 @@ namespace MCB.Core.Domain.Entities.Tests.SpecificationsTests
         public void DomainEntitySpecification_CreatedAtShouldValid_Error()
         {
             // Arrange
+            var dateTimeProvider = new DateTimeProvider();
             var expectedResult = false;
             var createdAt1 = DateTimeOffset.MinValue;
-            var createdAt2 = DateTimeProvider.GetDate().AddDays(1);
-            var domainEntitySpecifications = new DummyDomainEntitySpecifications();
+            var createdAt2 = dateTimeProvider.GetDate().AddDays(1);
+            var domainEntitySpecifications = new DummyDomainEntitySpecifications(dateTimeProvider);
 
             // Act
             var result1 = domainEntitySpecifications.CreatedAtShouldValid(createdAt1);
@@ -134,9 +143,10 @@ namespace MCB.Core.Domain.Entities.Tests.SpecificationsTests
         public void DomainEntitySpecification_CreatedByShouldRequired_Success()
         {
             // Arrange
+            var dateTimeProvider = new DateTimeProvider();
             var expectedResult = true;
             var createdBy = new string('a', 250);
-            var domainEntitySpecifications = new DummyDomainEntitySpecifications();
+            var domainEntitySpecifications = new DummyDomainEntitySpecifications(dateTimeProvider);
 
             // Act
             var result = domainEntitySpecifications.CreatedByShouldRequired(createdBy);
@@ -148,9 +158,10 @@ namespace MCB.Core.Domain.Entities.Tests.SpecificationsTests
         public void DomainEntitySpecification_CreatedByShouldRequired_Error()
         {
             // Arrange
+            var dateTimeProvider = new DateTimeProvider();
             var expectedResult = false;
             var createdBy = default(string);
-            var domainEntitySpecifications = new DummyDomainEntitySpecifications();
+            var domainEntitySpecifications = new DummyDomainEntitySpecifications(dateTimeProvider);
 
             // Act
             var result = domainEntitySpecifications.CreatedByShouldRequired(createdBy);
@@ -163,9 +174,10 @@ namespace MCB.Core.Domain.Entities.Tests.SpecificationsTests
         public void DomainEntitySpecification_CreatedByShouldValid_Success()
         {
             // Arrange
+            var dateTimeProvider = new DateTimeProvider();
             var expectedResult = true;
             var createdBy = new string('a', 250);
-            var domainEntitySpecifications = new DummyDomainEntitySpecifications();
+            var domainEntitySpecifications = new DummyDomainEntitySpecifications(dateTimeProvider);
 
             // Act
             var result = domainEntitySpecifications.CreatedByShouldValid(createdBy);
@@ -177,11 +189,12 @@ namespace MCB.Core.Domain.Entities.Tests.SpecificationsTests
         public void DomainEntitySpecification_CreatedByShouldValid_Error()
         {
             // Arrange
+            var dateTimeProvider = new DateTimeProvider();
             var expectedResult = false;
             var createdBy1 = default(string);
             var createdBy2 = new string('a', 251);
 
-            var domainEntitySpecifications = new DummyDomainEntitySpecifications();
+            var domainEntitySpecifications = new DummyDomainEntitySpecifications(dateTimeProvider);
 
             // Act
             var result1 = domainEntitySpecifications.CreatedByShouldValid(createdBy1);
@@ -196,9 +209,10 @@ namespace MCB.Core.Domain.Entities.Tests.SpecificationsTests
         public void DomainEntitySpecification_LastUpdatedAtShouldRequired_Success()
         {
             // Arrange
+            var dateTimeProvider = new DateTimeProvider();
             var expectedResult = true;
-            var lastUpdatedAt = DateTimeProvider.GetDate();
-            var domainEntitySpecifications = new DummyDomainEntitySpecifications();
+            var lastUpdatedAt = dateTimeProvider.GetDate();
+            var domainEntitySpecifications = new DummyDomainEntitySpecifications(dateTimeProvider);
 
             // Act
             var result = domainEntitySpecifications.LastUpdatedAtShouldRequired(lastUpdatedAt);
@@ -210,10 +224,11 @@ namespace MCB.Core.Domain.Entities.Tests.SpecificationsTests
         public void DomainEntitySpecification_LastUpdatedAtShouldRequired_Error()
         {
             // Arrange
+            var dateTimeProvider = new DateTimeProvider();
             var expectedResult = false;
             var lastUpdatedAt1 = default(DateTimeOffset?);
             var lastUpdatedAt2 = DateTimeOffset.MinValue;
-            var domainEntitySpecifications = new DummyDomainEntitySpecifications();
+            var domainEntitySpecifications = new DummyDomainEntitySpecifications(dateTimeProvider);
 
             // Act
             var result1 = domainEntitySpecifications.LastUpdatedAtShouldRequired(lastUpdatedAt1);
@@ -228,10 +243,11 @@ namespace MCB.Core.Domain.Entities.Tests.SpecificationsTests
         public void DomainEntitySpecification_LastUpdatedAtShouldValid_Success()
         {
             // Arrange
+            var dateTimeProvider = new DateTimeProvider();
             var expectedResult = true;
-            var createdAt = DateTimeProvider.GetDate().AddDays(-1);
-            var lastUpdatedAt = DateTimeProvider.GetDate();
-            var domainEntitySpecifications = new DummyDomainEntitySpecifications();
+            var createdAt = dateTimeProvider.GetDate().AddDays(-1);
+            var lastUpdatedAt = dateTimeProvider.GetDate();
+            var domainEntitySpecifications = new DummyDomainEntitySpecifications(dateTimeProvider);
 
             // Act
             var result = domainEntitySpecifications.LastUpdatedAtShouldValid(lastUpdatedAt, createdAt);
@@ -243,15 +259,16 @@ namespace MCB.Core.Domain.Entities.Tests.SpecificationsTests
         public void DomainEntitySpecification_LastUpdatedAtShouldValid_Error()
         {
             // Arrange
+            var dateTimeProvider = new DateTimeProvider();
             var expectedResult = false;
-            var createdAt = DateTimeProvider.GetDate().AddDays(-1);
+            var createdAt = dateTimeProvider.GetDate().AddDays(-1);
             var lastUpdatedAt1 = default(DateTimeOffset?);
             var lastUpdatedAt2 = DateTimeOffset.MinValue;
             var lastUpdatedAt3 = createdAt.AddDays(-1);
             var lastUpdatedAt4 = createdAt;
-            var lastUpdatedAt5 = DateTimeProvider.GetDate().AddDays(1);
+            var lastUpdatedAt5 = dateTimeProvider.GetDate().AddDays(1);
 
-            var domainEntitySpecifications = new DummyDomainEntitySpecifications();
+            var domainEntitySpecifications = new DummyDomainEntitySpecifications(dateTimeProvider);
 
             // Act
             var result1 = domainEntitySpecifications.LastUpdatedAtShouldValid(lastUpdatedAt1, createdAt);
@@ -272,9 +289,10 @@ namespace MCB.Core.Domain.Entities.Tests.SpecificationsTests
         public void DomainEntitySpecification_LastUpdatedByShouldRequired_Success()
         {
             // Arrange
+            var dateTimeProvider = new DateTimeProvider();
             var expectedResult = true;
             var lastUpdatedBy = new string('a', 250);
-            var domainEntitySpecifications = new DummyDomainEntitySpecifications();
+            var domainEntitySpecifications = new DummyDomainEntitySpecifications(dateTimeProvider);
 
             // Act
             var result = domainEntitySpecifications.LastUpdatedByShouldRequired(lastUpdatedBy);
@@ -286,9 +304,10 @@ namespace MCB.Core.Domain.Entities.Tests.SpecificationsTests
         public void DomainEntitySpecification_LastUpdatedByShouldRequired_Error()
         {
             // Arrange
+            var dateTimeProvider = new DateTimeProvider();
             var expectedResult = false;
             var lastUpdatedBy = default(string);
-            var domainEntitySpecifications = new DummyDomainEntitySpecifications();
+            var domainEntitySpecifications = new DummyDomainEntitySpecifications(dateTimeProvider);
 
             // Act
             var result = domainEntitySpecifications.LastUpdatedByShouldRequired(lastUpdatedBy);
@@ -301,9 +320,10 @@ namespace MCB.Core.Domain.Entities.Tests.SpecificationsTests
         public void DomainEntitySpecification_LastUpdatedByShouldValid_Success()
         {
             // Arrange
+            var dateTimeProvider = new DateTimeProvider();
             var expectedResult = true;
             var lastUpdatedBy = new string('a', 250);
-            var domainEntitySpecifications = new DummyDomainEntitySpecifications();
+            var domainEntitySpecifications = new DummyDomainEntitySpecifications(dateTimeProvider);
 
             // Act
             var result = domainEntitySpecifications.LastUpdatedByShouldValid(lastUpdatedBy);
@@ -315,11 +335,12 @@ namespace MCB.Core.Domain.Entities.Tests.SpecificationsTests
         public void DomainEntitySpecification_LastUpdatedByShouldValid_Error()
         {
             // Arrange
+            var dateTimeProvider = new DateTimeProvider();
             var expectedResult = false;
             var lastUpdatedBy1 = default(string);
             var lastUpdatedBy2 = new string('a', 251);
 
-            var domainEntitySpecifications = new DummyDomainEntitySpecifications();
+            var domainEntitySpecifications = new DummyDomainEntitySpecifications(dateTimeProvider);
 
             // Act
             var result1 = domainEntitySpecifications.LastUpdatedByShouldValid(lastUpdatedBy1);
@@ -334,9 +355,10 @@ namespace MCB.Core.Domain.Entities.Tests.SpecificationsTests
         public void DomainEntitySpecification_LastSourcePlatformShouldRequired_Success()
         {
             // Arrange
+            var dateTimeProvider = new DateTimeProvider();
             var expectedResult = true;
             var lastSourcePlatform = new string('a', 250);
-            var domainEntitySpecifications = new DummyDomainEntitySpecifications();
+            var domainEntitySpecifications = new DummyDomainEntitySpecifications(dateTimeProvider);
 
             // Act
             var result = domainEntitySpecifications.LastSourcePlatformShouldRequired(lastSourcePlatform);
@@ -348,9 +370,10 @@ namespace MCB.Core.Domain.Entities.Tests.SpecificationsTests
         public void DomainEntitySpecification_LastSourcePlatformShouldRequired_Error()
         {
             // Arrange
+            var dateTimeProvider = new DateTimeProvider();
             var expectedResult = false;
             var lastSourcePlatform = default(string);
-            var domainEntitySpecifications = new DummyDomainEntitySpecifications();
+            var domainEntitySpecifications = new DummyDomainEntitySpecifications(dateTimeProvider);
 
             // Act
             var result = domainEntitySpecifications.LastSourcePlatformShouldRequired(lastSourcePlatform);
@@ -363,9 +386,10 @@ namespace MCB.Core.Domain.Entities.Tests.SpecificationsTests
         public void DomainEntitySpecification_LastSourcePlatformShouldValid_Success()
         {
             // Arrange
+            var dateTimeProvider = new DateTimeProvider();
             var expectedResult = true;
             var lastSourcePlatform = new string('a', 250);
-            var domainEntitySpecifications = new DummyDomainEntitySpecifications();
+            var domainEntitySpecifications = new DummyDomainEntitySpecifications(dateTimeProvider);
 
             // Act
             var result = domainEntitySpecifications.LastSourcePlatformShouldValid(lastSourcePlatform);
@@ -377,11 +401,12 @@ namespace MCB.Core.Domain.Entities.Tests.SpecificationsTests
         public void DomainEntitySpecification_LastSourcePlatformShouldValid_Error()
         {
             // Arrange
+            var dateTimeProvider = new DateTimeProvider();
             var expectedResult = false;
             var lastSourcePlatform1 = default(string);
             var lastSourcePlatform2 = new string('a', 251);
 
-            var domainEntitySpecifications = new DummyDomainEntitySpecifications();
+            var domainEntitySpecifications = new DummyDomainEntitySpecifications(dateTimeProvider);
 
             // Act
             var result1 = domainEntitySpecifications.LastSourcePlatformShouldValid(lastSourcePlatform1);
@@ -396,9 +421,10 @@ namespace MCB.Core.Domain.Entities.Tests.SpecificationsTests
         public void DomainEntitySpecifications_RegistryVersionShouldRequired_Success()
         {
             // Arrange
+            var dateTimeProvider = new DateTimeProvider();
             var expectedResult = true;
-            var domainEntitySpecifications = new DummyDomainEntitySpecifications();
-            var registryVersion = DateTimeProvider.GetDate();
+            var domainEntitySpecifications = new DummyDomainEntitySpecifications(dateTimeProvider);
+            var registryVersion = dateTimeProvider.GetDate();
 
             // Act
             var result = domainEntitySpecifications.RegistryVersionShouldRequired(registryVersion);
@@ -410,8 +436,9 @@ namespace MCB.Core.Domain.Entities.Tests.SpecificationsTests
         public void DomainEntitySpecifications_RegistryVersionShouldRequired_Fail()
         {
             // Arrange
+            var dateTimeProvider = new DateTimeProvider();
             var expectedResult = false;
-            var domainEntitySpecifications = new DummyDomainEntitySpecifications();
+            var domainEntitySpecifications = new DummyDomainEntitySpecifications(dateTimeProvider);
             var registryVersion = DateTimeOffset.MinValue;
 
             // Act
@@ -425,11 +452,12 @@ namespace MCB.Core.Domain.Entities.Tests.SpecificationsTests
         public void DomainEntitySpecifications_RegistryVersionShouldValid_Success()
         {
             // Arrange
+            var dateTimeProvider = new DateTimeProvider();
             var expectedResult = true;
-            var domainEntitySpecifications = new DummyDomainEntitySpecifications();
+            var domainEntitySpecifications = new DummyDomainEntitySpecifications(dateTimeProvider);
 
-            var registryVersion1 = DateTimeProvider.GetDate();
-            var registryVersion2 = DateTimeProvider.GetDate().AddDays(-1);
+            var registryVersion1 = dateTimeProvider.GetDate();
+            var registryVersion2 = dateTimeProvider.GetDate().AddDays(-1);
 
             // Act
             var result1 = domainEntitySpecifications.RegistryVersionShouldValid(registryVersion1);
@@ -443,9 +471,10 @@ namespace MCB.Core.Domain.Entities.Tests.SpecificationsTests
         public void DomainEntitySpecifications_RegistryVersionShouldValid_Fail()
         {
             // Arrange
+            var dateTimeProvider = new DateTimeProvider();
             var expectedResult = false;
-            var domainEntitySpecifications = new DummyDomainEntitySpecifications();
-            var registryVersion = DateTimeProvider.GetDate().AddDays(1);
+            var domainEntitySpecifications = new DummyDomainEntitySpecifications(dateTimeProvider);
+            var registryVersion = dateTimeProvider.GetDate().AddDays(1);
 
             // Act
             var result = domainEntitySpecifications.RegistryVersionShouldValid(registryVersion);
@@ -457,7 +486,9 @@ namespace MCB.Core.Domain.Entities.Tests.SpecificationsTests
         public class DummyDomainEntitySpecifications
             : DomainEntitySpecifications
         {
-
+            public DummyDomainEntitySpecifications(IDateTimeProvider dateTimeProvider) : base(dateTimeProvider)
+            {
+            }
         }
     }
 }

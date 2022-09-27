@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using MCB.Core.Domain.Entities.Abstractions.ValueObjects;
 using MCB.Core.Domain.Entities.DomainEntitiesBase;
+using MCB.Core.Infra.CrossCutting.Abstractions.DateTime;
 using MCB.Core.Infra.CrossCutting.DateTime;
 using MCB.Core.Infra.CrossCutting.DesignPatterns.Validator.Abstractions.Enums;
 using MCB.Core.Infra.CrossCutting.DesignPatterns.Validator.Abstractions.Models;
@@ -17,7 +18,8 @@ public class DomainEntityBaseTest
     public void DomainEntityBase_Should_RegisterNew()
     {
         // Arrange
-        var customer = new Customer();
+        var dateTimeProvider = new DateTimeProvider();
+        var customer = new Customer(dateTimeProvider);
         var tenantId = Guid.NewGuid();
         var executionUser = "marcelo.castelo@outlook.com";
         var sourcePlatform = "AppDemo";
@@ -48,15 +50,16 @@ public class DomainEntityBaseTest
     public void DomainEntityBase_Should_SetExistingInfo()
     {
         // Arrange
-        var customer = new Customer();
+        var dateTimeProvider = new DateTimeProvider();
+        var customer = new Customer(dateTimeProvider);
         var id = Guid.NewGuid();
         var tenantId = Guid.NewGuid();
         var createdBy = "marcelo.castelo@outlook.com";
-        var createdAt = DateTimeProvider.GetDate();
+        var createdAt = dateTimeProvider.GetDate();
         var updatedBy = "marcelo.castelo@github.com";
-        var updatedAt = DateTimeProvider.GetDate();
+        var updatedAt = dateTimeProvider.GetDate();
         var sourcePlatform = "AppDemo";
-        var registryVersion = DateTimeProvider.GetDate();
+        var registryVersion = dateTimeProvider.GetDate();
 
         // Act
         customer.SetExistingInfoExposed(id, tenantId, createdBy, createdAt, updatedBy, updatedAt, sourcePlatform, registryVersion);
@@ -82,7 +85,8 @@ public class DomainEntityBaseTest
     public void DomainEntityBase_Should_RegisterModification()
     {
         // Arrange
-        var customer = new Customer();
+        var dateTimeProvider = new DateTimeProvider();
+        var customer = new Customer(dateTimeProvider);
         var tenantId = Guid.NewGuid();
         var executionUser = "marcelo.castelo@outlook.com";
         var sourcePlatform = "AppDemo";
@@ -121,8 +125,9 @@ public class DomainEntityBaseTest
     public void DomainEntityBase_Should_Add_Validation_Message()
     {
         // Arrange
-        var customer = new Customer();
-        var customer2 = new Customer();
+        var dateTimeProvider = new DateTimeProvider();
+        var customer = new Customer(dateTimeProvider);
+        var customer2 = new Customer(dateTimeProvider);
 
         // Act
         customer.AddInformationValidationMessage("INFO_1", "INFORMATION");
@@ -176,7 +181,8 @@ public class DomainEntityBaseTest
     public void DomainEntityBase_Should_ValidationInfo_Modified_Only_For_DomainEntity()
     {
         // Arrange
-        var customer = new Customer();
+        var dateTimeProvider = new DateTimeProvider();
+        var customer = new Customer(dateTimeProvider);
 
         // Act
         customer.AddInformationValidationMessage("INFO_1", "INFORMATION");
@@ -209,7 +215,8 @@ public class DomainEntityBaseTest
     public void DomainEntityBase_Should_DeepCloneInternal()
     {
         // Arrange
-        var customer = new Customer();
+        var dateTimeProvider = new DateTimeProvider();
+        var customer = new Customer(dateTimeProvider);
         var tenantId = Guid.NewGuid();
         var executionUser = "marcelo.castelo@outlook.com";
         var sourcePlatform = "AppDemo";
@@ -230,11 +237,11 @@ public class DomainEntityBaseTest
             id: Guid.NewGuid(),
             tenantId: Guid.NewGuid(),
             createdBy: Guid.NewGuid().ToString(),
-            createdAt: DateTimeProvider.GetDate(),
+            createdAt: dateTimeProvider.GetDate(),
             updatedBy: Guid.NewGuid().ToString(),
-            updatedAt: DateTimeProvider.GetDate(),
+            updatedAt: dateTimeProvider.GetDate(),
             sourcePlatform: Guid.NewGuid().ToString(),
-            registryVersion: DateTimeProvider.GetDate()
+            registryVersion: dateTimeProvider.GetDate()
         );
 
         // Assert
@@ -271,7 +278,8 @@ public class DomainEntityBaseTest
     public void DomainEntityBase_Should_Validate()
     {
         // Arrange
-        var customer = new Customer();
+        var dateTimeProvider = new DateTimeProvider();
+        var customer = new Customer(dateTimeProvider);
 
         // Act
         var isValid = customer.Validate();
@@ -304,7 +312,8 @@ public class DomainEntityBaseTest
     public void DomainEntityBase_Should_AddFromValidationResult()
     {
         // Arrange
-        var customer = new Customer();
+        var dateTimeProvider = new DateTimeProvider();
+        var customer = new Customer(dateTimeProvider);
         var validationResult = new ValidationResult(new[] {
             new ValidationMessage(ValidationMessageType.Information, "INFO_1", "INFORMATION"),
             new ValidationMessage(ValidationMessageType.Warning, "WARNING_1", "WARNING"),
@@ -339,7 +348,8 @@ public class DomainEntityBaseTest
     public void DomainEntityBase_Should_AddFromValidationInfo()
     {
         // Arrange and Act
-        var customer = new Customer();
+        var dateTimeProvider = new DateTimeProvider();
+        var customer = new Customer(dateTimeProvider);
         var validationInfo = new ValidationInfoValueObject();
 
         validationInfo.AddInformationValidationMessage("INFO_1", "INFORMATION");
@@ -384,10 +394,16 @@ public class DomainEntityBaseTest
         public static readonly string INFO_CODE = "code_3";
         public static readonly string INFO_DESCRIPTION = "description_3";
 
+        // Constructors
+        public Customer(IDateTimeProvider dateTimeProvider) : base(dateTimeProvider)
+        {
+        }
+
         // Protected Abstract Methods
         protected override DomainEntityBase CreateInstanceForCloneInternal()
         {
-            return new Customer();
+            var dateTimeProvider = new DateTimeProvider();
+            return new Customer(dateTimeProvider);
         }
 
         // Protected Methods

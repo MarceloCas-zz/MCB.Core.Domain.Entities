@@ -1,6 +1,6 @@
 ﻿using MCB.Core.Domain.Entities.Abstractions;
 using MCB.Core.Domain.Entities.Abstractions.ValueObjects;
-using MCB.Core.Infra.CrossCutting.DateTime;
+using MCB.Core.Infra.CrossCutting.Abstractions.DateTime;
 using MCB.Core.Infra.CrossCutting.DesignPatterns.Validator.Abstractions.Enums;
 using MCB.Core.Infra.CrossCutting.DesignPatterns.Validator.Abstractions.Models;
 
@@ -10,6 +10,7 @@ public abstract class DomainEntityBase
     : IDomainEntity
 {
     // Fields
+    private readonly IDateTimeProvider _dateTimeProvider;
     private ValidationInfoValueObject _validationInfoValueObject = new();
 
     // Properties
@@ -20,8 +21,11 @@ public abstract class DomainEntityBase
     public ValidationInfoValueObject ValidationInfo => _validationInfoValueObject.Clone();
 
     // Constructors
-    protected DomainEntityBase()
+    protected DomainEntityBase(
+        IDateTimeProvider dateTimeProvider    
+    )
     {
+        _dateTimeProvider = dateTimeProvider;
         AuditableInfo = new AuditableInfoValueObject();
     }
 
@@ -65,7 +69,7 @@ public abstract class DomainEntityBase
     private TDomainEntityBase GenerateNewRegistryVersion<TDomainEntityBase>()
         where TDomainEntityBase : DomainEntityBase
     {
-        return SetRegistryVersion<TDomainEntityBase>(DateTimeProvider.GetDate());
+        return SetRegistryVersion<TDomainEntityBase>(_dateTimeProvider.GetDate());
     }
     private TDomainEntityBase SetValidationInfo<TDomainEntityBase>(ValidationInfoValueObject validationInfoValueObject)
          where TDomainEntityBase : DomainEntityBase
@@ -148,7 +152,7 @@ public abstract class DomainEntityBase
             .SetTenant<TDomainEntityBase>(tenantId)
             .SetAuditableInfo<TDomainEntityBase>(
                 createdBy: executionUser,
-                createdAt: DateTimeProvider.GetDate(),
+                createdAt: _dateTimeProvider.GetDate(),
                 updatedBy: null,
                 updatedAt: null,
                 sourcePlatform
@@ -177,7 +181,7 @@ public abstract class DomainEntityBase
             createdBy: AuditableInfo.CreatedBy,
             createdAt: AuditableInfo.CreatedAt,
             updatedBy: executionUser,
-            updatedAt: DateTimeProvider.GetDate(),
+            updatedAt: _dateTimeProvider.GetDate(),
             sourcePlatform
         )
         .GenerateNewRegistryVersion<TDomainEntityBase>();
