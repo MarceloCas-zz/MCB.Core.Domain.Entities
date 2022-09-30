@@ -6,13 +6,13 @@ namespace MCB.Core.Domain.Entities.DomainEntitiesBase.Specifications;
 public class DomainEntitySpecifications
     : IDomainEntitySpecifications
 {
-    // Fields
-    private readonly IDateTimeProvider _dateTimeProvider;
+    // Protected Properties
+    protected IDateTimeProvider DateTimeProvider { get; }
 
     // Constructors
     public DomainEntitySpecifications(IDateTimeProvider dateTimeProvider)
     {
-        _dateTimeProvider = dateTimeProvider;
+        DateTimeProvider = dateTimeProvider;
     }
 
     // Constructors
@@ -33,7 +33,7 @@ public class DomainEntitySpecifications
     public bool CreatedAtShouldValid(DateTimeOffset createdAt)
     {
         return CreatedAtShouldRequired(createdAt)
-            && createdAt <= _dateTimeProvider.GetDate();
+            && createdAt <= DateTimeProvider.GetDate();
     }
 
     public bool CreatedByShouldRequired(string createdBy)
@@ -55,7 +55,7 @@ public class DomainEntitySpecifications
     {
         return LastUpdatedAtShouldRequired(lastUpdatedAt)
             && lastUpdatedAt > createdAt
-            && lastUpdatedAt <= _dateTimeProvider.GetDate();
+            && lastUpdatedAt <= DateTimeProvider.GetDate();
     }
 
     public bool LastUpdatedByShouldRequired(string lastUpdatedBy)
@@ -85,6 +85,6 @@ public class DomainEntitySpecifications
     public bool RegistryVersionShouldValid(DateTimeOffset registryVersion)
     {
         return RegistryVersionShouldRequired(registryVersion)
-            && registryVersion <= _dateTimeProvider.GetDate();
+            && registryVersion <= DateTimeProvider.GetDate();
     }
 }
