@@ -10,7 +10,7 @@ public abstract class DomainEntityBase
     : IDomainEntity
 {
     // Fields
-    private readonly IDateTimeProvider _dateTimeProvider;
+    private IDateTimeProvider _dateTimeProvider;
     private ValidationInfoValueObject _validationInfoValueObject = new();
 
     // Properties
@@ -21,15 +21,19 @@ public abstract class DomainEntityBase
     public ValidationInfoValueObject ValidationInfo => _validationInfoValueObject.Clone();
 
     // Constructors
-    protected DomainEntityBase(
-        IDateTimeProvider dateTimeProvider    
-    )
+    protected DomainEntityBase(IDateTimeProvider dateTimeProvider)
     {
-        _dateTimeProvider = dateTimeProvider;
+        SetDateTimeProvider<DomainEntityBase>(dateTimeProvider);
         AuditableInfo = new AuditableInfoValueObject();
     }
 
     // Private Methods
+    private TDomainEntityBase SetDateTimeProvider<TDomainEntityBase>(IDateTimeProvider dateTimeProvider)
+        where TDomainEntityBase : DomainEntityBase
+    {
+        _dateTimeProvider = dateTimeProvider;
+        return (TDomainEntityBase)this;
+    }
     private TDomainEntityBase SetId<TDomainEntityBase>(Guid id)
         where TDomainEntityBase : DomainEntityBase
     {
@@ -202,6 +206,7 @@ public abstract class DomainEntityBase
                 AuditableInfo.LastSourcePlatform,
                 RegistryVersion
             )
-            .SetValidationInfo<TDomainEntityBase>(ValidationInfo);
+            .SetValidationInfo<TDomainEntityBase>(ValidationInfo)
+            .SetDateTimeProvider<TDomainEntityBase>(_dateTimeProvider);
     }
 }
