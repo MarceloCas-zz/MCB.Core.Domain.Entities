@@ -3,7 +3,6 @@ using MCB.Core.Domain.Entities.Abstractions.ValueObjects;
 using MCB.Core.Infra.CrossCutting.Abstractions.DateTime;
 using MCB.Core.Infra.CrossCutting.DesignPatterns.Validator.Abstractions.Enums;
 using MCB.Core.Infra.CrossCutting.DesignPatterns.Validator.Abstractions.Models;
-using System.Runtime.CompilerServices;
 
 namespace MCB.Core.Domain.Entities.DomainEntitiesBase;
 
