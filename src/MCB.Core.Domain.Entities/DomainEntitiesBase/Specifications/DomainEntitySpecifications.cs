@@ -1,4 +1,4 @@
-﻿using MCB.Core.Domain.Entities.Abstractions.Specifications.Interfaces;
+﻿using MCB.Core.Domain.Entities.Abstractions.Specifications;
 using MCB.Core.Infra.CrossCutting.Abstractions.DateTime;
 
 namespace MCB.Core.Domain.Entities.DomainEntitiesBase.Specifications;
